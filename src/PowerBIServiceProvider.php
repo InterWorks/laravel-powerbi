@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace InterWorks\PowerBI;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use InterWorks\PowerBI\Commands\PowerBICommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class PowerBIServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('laravel-powerbi')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_laravel_powerbi_table')
+            ->hasCommand(PowerBICommand::class);
     }
 }
