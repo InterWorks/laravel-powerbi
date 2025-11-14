@@ -1,0 +1,20 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "request-redirected": "true",
+        "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
+        "Date": "Fri, 14 Nov 2025 19:36:39 GMT"
+    },
+    "data": "{\"@odata.context\":\"https:\\\/\\\/wabi-us-north-central-redirect.analysis.windows.net\\\/v1.0\\\/myorg\\\/$metadata#groups\",\"@odata.count\":5,\"value\":[{\"id\":\"8f804a70-791e-3abf-ac10-75634bf1053f\",\"isReadOnly\":false,\"isOnDedicatedCapacity\":false,\"type\":\"Workspace\",\"name\":\"Microsoft 365 Usage Analytics\"},{\"id\":\"8bd2e5f0-e0c6-3302-beb7-e1a3aa7f4d45\",\"isReadOnly\":false,\"isOnDedicatedCapacity\":false,\"type\":\"Workspace\",\"name\":\"Github\"},{\"id\":\"8a1e76f1-c9b8-359a-9450-612c2f61a0f3\",\"isReadOnly\":false,\"isOnDedicatedCapacity\":false,\"type\":\"Workspace\",\"name\":\"Demos\"},{\"id\":\"46833682-447f-3f27-a004-77cd655b4188\",\"isReadOnly\":false,\"isOnDedicatedCapacity\":true,\"capacityId\":\"814FAF8C-4E96-443D-91AC-5031CE3021D5\",\"defaultDatasetStorageFormat\":\"Small\",\"type\":\"Workspace\",\"name\":\"Fabric Testing\"},{\"id\":\"7f364f69-29e8-36ab-86bc-534e7ba09815\",\"isReadOnly\":false,\"isOnDedicatedCapacity\":false,\"type\":\"Workspace\",\"name\":\"What about me!\"}]}",
+    "context": []
+}
