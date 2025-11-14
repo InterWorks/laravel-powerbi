@@ -2,9 +2,9 @@
 
 namespace InterWorks\PowerBI;
 
+use InterWorks\PowerBI\Commands\PowerBICommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use InterWorks\PowerBI\Commands\PowerBICommand;
 
 class PowerBIServiceProvider extends PackageServiceProvider
 {
