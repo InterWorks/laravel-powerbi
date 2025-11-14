@@ -13,7 +13,8 @@
         "Access-Control-Expose-Headers": "RequestId",
         "request-redirected": "true",
         "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
-        "Date": "Fri, 14 Nov 2025 19:36:39 GMT"
+        "Date": "Fri, 14 Nov 2025 21:44:32 GMT",
+        "Connection": "close"
     },
     "data": {
         "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/$metadata#groups",

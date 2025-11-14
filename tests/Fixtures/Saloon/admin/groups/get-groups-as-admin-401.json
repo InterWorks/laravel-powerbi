@@ -1,0 +1,19 @@
+{
+    "statusCode": 401,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application\/octet-stream",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "Access-Control-Expose-Headers": "RequestId",
+        "request-redirected": "true",
+        "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
+        "Date": "Fri, 14 Nov 2025 22:11:33 GMT"
+    },
+    "data": "",
+    "context": []
+}
