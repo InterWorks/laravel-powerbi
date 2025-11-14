@@ -1,12 +1,12 @@
 {
-    "name": "mrkbinghham/laravel-powerbi",
+    "name": "interworks/laravel-powerbi",
     "description": "A Laravel PowerBI REST API package",
     "keywords": [
         "InterWorks",
         "laravel",
         "laravel-powerbi"
     ],
-    "homepage": "https://github.com/mrkbinghham/laravel-powerbi",
+    "homepage": "https://github.com/interworks/laravel-powerbi",
     "license": "MIT",
     "authors": [
         {
