@@ -11,6 +11,7 @@ This is a Laravel package that provides a REST API client for Microsoft Power BI
 ## Development Commands
 
 ### Testing
+
 ```bash
 # Run all tests
 composer test
@@ -26,6 +27,7 @@ vendor/bin/pest --filter "can get groups"
 ```
 
 ### Code Quality
+
 ```bash
 # Format code with Laravel Pint
 composer format
@@ -35,6 +37,7 @@ composer analyse
 ```
 
 ### Package Setup
+
 ```bash
 # Refresh package discovery
 composer prepare
@@ -67,13 +70,15 @@ All API requests follow this structure:
    - Collection DTOs include static `fromArray()` factory methods
 
 Example flow:
-```
+
+```text
 PowerBI connector → GetGroups request → Groups DTO → Collection<Group>
 ```
 
 ### Authentication
 
 OAuth2 flow with Azure AD:
+
 - Uses `ClientCredentialsGrant` trait from Saloon
 - Token endpoint: `https://login.windows.net/{tenant}/oauth2/token`
 - Resource: `https://analysis.windows.net/powerbi/api`
@@ -104,6 +109,7 @@ The package uses Spatie's `laravel-package-tools` for service provider scaffoldi
 ## Static Analysis
 
 PHPStan configuration (`phpstan.neon`):
+
 - Level 10 (maximum strictness)
 - Includes baseline for existing issues
 - Octane compatibility checks enabled
