@@ -21,10 +21,10 @@ class Dashboard implements WithResponse
      *
      * @param  array{
      *    id: string,
-     *    displayName: string
+     *    displayName: string,
      *    isReadOnly: bool,
      *    embedUrl: string,
-     * }> $item
+     * } $item
      */
     public static function fromItem(array $item): self
     {

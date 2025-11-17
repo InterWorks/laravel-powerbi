@@ -24,11 +24,10 @@ class Dashboards implements WithResponse
      *
      * @param  array<int, array{
      *    id: string,
+     *    displayName: string,
      *    isReadOnly: bool,
-     *    isOnDedicatedCapacity: bool,
-     *    type: string,
-     *    name: string
-     * }> $data The array to parse.
+     *    embedUrl: string,
+     * }> $data
      */
     public static function fromArray(array $data): self
     {
