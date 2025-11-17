@@ -11,8 +11,8 @@ class Report implements WithResponse
     use HasResponse;
 
     /**
-     * @param array<int, array<string, mixed>> $users
-     * @param array<int, array<string, mixed>> $subscriptions
+     * @param  array<int, array<string, mixed>>  $users
+     * @param  array<int, array<string, mixed>>  $subscriptions
      */
     public function __construct(
         public readonly string $id,

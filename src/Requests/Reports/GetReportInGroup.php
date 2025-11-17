@@ -16,8 +16,6 @@ class GetReportInGroup extends Request
 
     /**
      * Create a new request instance.
-     *
-     * @param string $groupId
      */
     public function __construct(
         protected readonly string $groupId,
