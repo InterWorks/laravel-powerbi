@@ -1,13 +1,13 @@
 <?php
 
-namespace InterWorks\PowerBI\Requests\Groups;
+namespace InterWorks\PowerBI\Requests\Reports;
 
-use InterWorks\PowerBI\DTO\Groups;
+use InterWorks\PowerBI\DTO\Reports;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-class GetGroups extends Request
+class GetReportsInGroup extends Request
 {
     /**
      * The HTTP method of the request
@@ -15,11 +15,18 @@ class GetGroups extends Request
     protected Method $method = Method::GET;
 
     /**
+     * Create a new request instance.
+     *
+     * @param string $groupId
+     */
+    public function __construct(protected readonly string $groupId) {}
+
+    /**
      * The endpoint for the request
      */
     public function resolveEndpoint(): string
     {
-        return '/groups';
+        return "/groups/{$this->groupId}/reports";
     }
 
     public function createDtoFromResponse(Response $response): mixed
@@ -27,8 +34,8 @@ class GetGroups extends Request
         $data = $response->json();
 
         // @phpstan-ignore argument.type
-        $groups = Groups::fromArray($data['value']);
+        $reports = Reports::fromArray($data['value']);
 
-        return $groups;
+        return $reports;
     }
 }

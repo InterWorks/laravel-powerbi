@@ -69,19 +69,9 @@ class GetGroupsAsAdmin extends Request
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        /** @var array{
-         * '@odata.context': string,
-         * '@odata.count': int,
-         * 'value': array<int, array{
-         *    id: string,
-         *    isReadOnly: bool,
-         *    isOnDedicatedCapacity: bool,
-         *    type: string,
-         *    name: string
-         * }>}
-         */
         $data = $response->json();
 
+        // @phpstan-ignore argument.type
         $groups = Groups::fromArray($data['value']);
 
         return $groups;

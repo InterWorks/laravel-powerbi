@@ -12,11 +12,16 @@ test('can get groups', function () {
         GetGroups::class => new PowerBIFixture('groups/get-groups'),
     ]);
 
+    // Create the PowerBI connection and authenticate
     $powerBIConnection = new PowerBI;
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetGroups;
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
+
+    // Validate the response
     expect($response->status())->toBe(200);
     expect($response->dto())->toBeInstanceOf(Groups::class);
     foreach ($response->dto()->groups as $group) {

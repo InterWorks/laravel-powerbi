@@ -27,6 +27,18 @@ class PowerBIFixture extends Fixture
             'token' => 'REDACTED',
             'id' => fn () => fake()->uuid,
             'clientId' => fn () => fake()->uuid,
+            'datasetId' => fn () => fake()->uuid,
+            'datasetWorkspaceId' => fn () => fake()->uuid,
+            'webUrl' => 'REDACTED',
+            'embedUrl' => 'REDACTED',
+        ];
+    }
+
+    protected function defineSensitiveRegexPatterns(): array
+    {
+        return [
+            // Make sure to remove group IDs from the context urls
+            "/myorg\\\\\/groups\\\\\/[\S]+\\\\\//" => "myorg\/groups\/[REDACTED]\/",
         ];
     }
 }
