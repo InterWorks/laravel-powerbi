@@ -1,0 +1,20 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "request-redirected": "true",
+        "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
+        "Date": "Mon, 17 Nov 2025 23:42:33 GMT"
+    },
+    "data": "{\"@odata.context\":\"https:\\\/\\\/wabi-us-north-central-redirect.analysis.windows.net\\\/v1.0\\\/myorg\\\/groups\\\/[REDACTED]\\\/$entity\",\"id\":\"c061afed-26ea-3c87-b497-9f1ad2b38cae\",\"displayName\":\"IT Spend Analysis Sample\",\"isReadOnly\":false,\"webUrl\":\"REDACTED\",\"embedUrl\":\"REDACTED\",\"users\":[],\"subscriptions\":[]}",
+    "context": []
+}
