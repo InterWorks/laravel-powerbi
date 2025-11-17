@@ -28,18 +28,12 @@ class Groups implements WithResponse
      *    isOnDedicatedCapacity: bool,
      *    type: string,
      *    name: string
-     * }> $data The array to parse.
+     * }> $data
      */
     public static function fromArray(array $data): self
     {
         $groups = collect($data)->map(function ($item) {
-            return new Group(
-                id: $item['id'],
-                isReadOnly: $item['isReadOnly'],
-                isOnDedicatedCapacity: $item['isOnDedicatedCapacity'],
-                type: $item['type'],
-                name: $item['name'],
-            );
+            return Group::fromItem($item);
         });
 
         return new self($groups);

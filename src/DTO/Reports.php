@@ -37,26 +37,12 @@ class Reports implements WithResponse
      *    users: array<int, array<string, mixed>>,
      *    subscriptions: array<int, array<string, mixed>>,
      *    reportFlags: int,
-     * }> $data The array to parse.
+     * }> $data
      */
     public static function fromArray(array $data): self
     {
         $reports = collect($data)->map(function ($item) {
-            return new Report(
-                id: $item['id'],
-                appId: $item['appId'] ?? null,
-                name: $item['name'],
-                description: $item['description'] ?? null,
-                isOwnedByMe: $item['isOwnedByMe'],
-                reportType: ReportType::fromString($item['reportType']),
-                datasetId: $item['datasetId'],
-                datasetWorkspaceId: $item['datasetWorkspaceId'],
-                webUrl: $item['webUrl'],
-                embedUrl: $item['embedUrl'],
-                users: $item['users'],
-                subscriptions: $item['subscriptions'],
-                reportFlags: $item['reportFlags']
-            );
+            return Report::fromItem($item);
         });
 
         return new self($reports);

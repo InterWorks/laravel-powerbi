@@ -1,0 +1,34 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "request-redirected": "true",
+        "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
+        "Date": "Mon, 17 Nov 2025 22:58:08 GMT"
+    },
+    "data": {
+        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED]/$entity",
+        "id": "5eec7756-ebcc-36a0-9af1-85b0824c55f4",
+        "reportType": "PowerBIReport",
+        "name": "IT Spend Analysis Sample",
+        "webUrl": "REDACTED",
+        "embedUrl": "REDACTED",
+        "isFromPbix": false,
+        "isOwnedByMe": true,
+        "datasetId": "a71f6046-f802-3520-b390-a6d4b6caed4a",
+        "datasetWorkspaceId": "e2d5dcdf-426a-3594-af6c-cc80c8ae660c",
+        "users": [],
+        "subscriptions": [],
+        "reportFlags": 0
+    },
+    "context": []
+}
