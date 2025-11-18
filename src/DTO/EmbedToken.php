@@ -2,8 +2,8 @@
 
 namespace InterWorks\PowerBI\DTO;
 
-use Exception;
 use Carbon\Carbon;
+use Exception;
 use Saloon\Contracts\DataObjects\WithResponse;
 use Saloon\Traits\Responses\HasResponse;
 

@@ -12,6 +12,7 @@ use Saloon\Traits\Body\HasJsonBody;
 class ReportsGenerateTokenInGroup extends Request implements HasBody
 {
     use HasJsonBody;
+
     /**
      * The HTTP method of the request
      */
