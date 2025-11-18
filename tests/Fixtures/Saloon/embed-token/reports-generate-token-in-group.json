@@ -13,21 +13,13 @@
         "Access-Control-Expose-Headers": "RequestId",
         "request-redirected": "true",
         "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
-        "Date": "Mon, 17 Nov 2025 23:31:06 GMT"
+        "Date": "Tue, 18 Nov 2025 00:20:56 GMT"
     },
     "data": {
-        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED-GROUP-ID]/$metadata#dashboards",
-        "value": [
-            {
-                "id": "4ce59867-981d-3a48-aba8-1f4774e6852c",
-                "displayName": "IT Spend Analysis Sample",
-                "isReadOnly": false,
-                "webUrl": "REDACTED_WEB_URL",
-                "embedUrl": "REDACTED_EMBED_URL",
-                "users": [],
-                "subscriptions": []
-            }
-        ]
+        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED-GROUP-ID]/$metadata#Microsoft.PowerBI.ServiceContracts.Api.V1.GenerateTokenResponse",
+        "token": "REDACTED_TOKEN",
+        "tokenId": "d2df3f83-2f17-3a5e-a43d-654e0e747623",
+        "expiration": "2025-11-18T01:20:56Z"
     },
     "context": []
 }

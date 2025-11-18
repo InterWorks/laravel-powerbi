@@ -24,13 +24,14 @@ class PowerBIFixture extends Fixture
     protected function defineSensitiveJsonParameters(): array
     {
         return [
-            'token' => 'REDACTED',
+            'token' => 'REDACTED_TOKEN',
+            'tokenId' => fn () => fake()->uuid,
             'id' => fn () => fake()->uuid,
             'clientId' => fn () => fake()->uuid,
             'datasetId' => fn () => fake()->uuid,
             'datasetWorkspaceId' => fn () => fake()->uuid,
-            'webUrl' => 'REDACTED',
-            'embedUrl' => 'REDACTED',
+            'webUrl' => 'REDACTED_WEB_URL',
+            'embedUrl' => 'REDACTED_EMBED_URL',
         ];
     }
 
@@ -38,7 +39,7 @@ class PowerBIFixture extends Fixture
     {
         return [
             // Make sure to remove group IDs from the context urls
-            "/myorg\\\\\/groups\\\\\/[\S]+\\\\\//" => "myorg\/groups\/[REDACTED]\/",
+            "/myorg\\\\\/groups\\\\\/[\S]+\\\\\//" => "myorg\/groups\/[REDACTED-GROUP-ID]\/",
         ];
     }
 }

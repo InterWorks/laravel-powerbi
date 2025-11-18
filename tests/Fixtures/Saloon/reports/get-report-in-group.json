@@ -16,12 +16,12 @@
         "Date": "Mon, 17 Nov 2025 22:58:08 GMT"
     },
     "data": {
-        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED]/$entity",
+        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED-GROUP-ID]/$entity",
         "id": "5eec7756-ebcc-36a0-9af1-85b0824c55f4",
         "reportType": "PowerBIReport",
         "name": "IT Spend Analysis Sample",
-        "webUrl": "REDACTED",
-        "embedUrl": "REDACTED",
+        "webUrl": "REDACTED_WEB_URL",
+        "embedUrl": "REDACTED_EMBED_URL",
         "isFromPbix": false,
         "isOwnedByMe": true,
         "datasetId": "a71f6046-f802-3520-b390-a6d4b6caed4a",
