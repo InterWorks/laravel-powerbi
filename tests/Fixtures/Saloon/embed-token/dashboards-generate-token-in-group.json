@@ -1,0 +1,25 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "request-redirected": "true",
+        "home-cluster-uri": "https:\/\/wabi-us-north-central-redirect.analysis.windows.net\/",
+        "Date": "Tue, 18 Nov 2025 15:52:00 GMT"
+    },
+    "data": {
+        "@odata.context": "https://wabi-us-north-central-redirect.analysis.windows.net/v1.0/myorg/groups/[REDACTED-GROUP-ID]/$metadata#Microsoft.PowerBI.ServiceContracts.Api.V1.GenerateTokenResponse",
+        "token": "REDACTED_TOKEN",
+        "tokenId": "8b08b3cc-aa38-36da-ab3c-33e905518842",
+        "expiration": "2025-11-18T16:52:00Z"
+    },
+    "context": []
+}
