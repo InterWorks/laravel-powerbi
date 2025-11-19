@@ -2,6 +2,7 @@
 
 namespace InterWorks\PowerBI\Connectors;
 
+use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InvalidArgumentException;
@@ -47,9 +48,9 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase
             );
         }
 
-        $this->tenant = $tenant ?? config('powerbi.tenant');
-        $this->clientId = $clientId ?? config('powerbi.client_id');
-        $this->clientSecret = $clientSecret ?? config('powerbi.client_secret');
+        $this->tenant = $tenant ?? Config::string('powerbi.tenant');
+        $this->clientId = $clientId ?? Config::string('powerbi.client_id');
+        $this->clientSecret = $clientSecret ?? Config::string('powerbi.client_secret');
         $this->connectionAccountType = $connectionAccountType;
     }
 
