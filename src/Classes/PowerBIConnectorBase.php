@@ -1,6 +1,6 @@
 <?php
 
-namespace InterWorks\PowerBI;
+namespace InterWorks\PowerBI\Classes;
 
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
@@ -66,7 +66,6 @@ abstract class PowerBIConnectorBase extends Connector
         // Proceed with the normal send process
         return parent::send($request, $mockClient, $handleRetry);
     }
-
 
     //
     // Account Type Restriction Enforcement
