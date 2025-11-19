@@ -1,7 +1,6 @@
 <?php
 
 use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
-use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
