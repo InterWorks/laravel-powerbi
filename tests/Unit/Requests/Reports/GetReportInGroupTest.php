@@ -1,5 +1,6 @@
 <?php
 
+use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Reports\GetReportInGroup;
@@ -12,7 +13,7 @@ test('can get single report from a specified group', function () {
     ]);
 
     // Create the PowerBI connection and authenticate
-    $powerBIConnection = new PowerBI;
+    $powerBIConnection = new PowerBIServicePrincipal;
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
 

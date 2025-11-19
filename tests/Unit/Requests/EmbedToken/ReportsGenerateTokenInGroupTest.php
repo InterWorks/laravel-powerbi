@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\EmbedToken;
 use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\EmbedToken\ReportsGenerateTokenInGroup;
@@ -13,7 +14,7 @@ test('can get an embed token for a report from a specified group', function () {
     ]);
 
     // Create the PowerBI connection and authenticate
-    $powerBIConnection = new PowerBI;
+    $powerBIConnection = new PowerBIServicePrincipal();
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
 

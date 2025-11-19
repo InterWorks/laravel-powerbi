@@ -1,5 +1,6 @@
 <?php
 
+use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Dashboard;
 use InterWorks\PowerBI\DTO\Dashboards;
 use InterWorks\PowerBI\PowerBI;
@@ -13,7 +14,7 @@ test('can get dashboards in group', function () {
     ]);
 
     // Create the PowerBI connection and authenticate
-    $powerBIConnection = new PowerBI;
+    $powerBIConnection = new PowerBIServicePrincipal;
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
 

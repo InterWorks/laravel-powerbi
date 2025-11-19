@@ -1,5 +1,6 @@
 <?php
 
+use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Group;
 use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\Exceptions\UnauthorizedAdminAccessException;
@@ -19,7 +20,7 @@ test('can get groups as admin', function () {
         GetGroupsAsAdmin::class => new PowerBIFixture('admin/groups/get-groups-as-admin'),
     ]);
 
-    $powerBIConnection = new PowerBI(
+    $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
@@ -133,7 +134,7 @@ test('throws UnauthorizedAdminAccessException when non-admin tries to access adm
         GetGroupsAsAdmin::class => new PowerBIFixture('admin/groups/get-groups-as-admin-401'),
     ]);
 
-    $powerBIConnection = new PowerBI(
+    $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')

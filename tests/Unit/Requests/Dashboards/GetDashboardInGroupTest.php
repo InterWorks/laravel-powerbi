@@ -1,5 +1,6 @@
 <?php
 
+use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Dashboard;
 use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardInGroup;
@@ -11,7 +12,7 @@ test('can get single dashboard from a specified group', function () {
         GetDashboardInGroup::class => new PowerBIFixture('dashboards/get-dashboard-in-group'),
     ]);
 
-    $powerBIConnection = new PowerBI;
+    $powerBIConnection = new PowerBIServicePrincipal();
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
     $request = new GetDashboardInGroup((env('POWER_BI_GROUP_ID')), (env('POWER_BI_DASHBOARD_ID')));

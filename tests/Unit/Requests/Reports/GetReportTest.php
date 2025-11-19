@@ -1,7 +1,7 @@
 <?php
 
-use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
+use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
@@ -49,8 +49,7 @@ describe('GetReport access control', function () {
             GetReport::class => new PowerBIFixture('reports/get-report'),
         ]);
         // Create connection with AzureUser account type using factory method
-        $powerBIConnection = PowerBI::create(
-            accountType: ConnectionAccountType::AzureUser,
+        $powerBIConnection = new PowerBIAzureUser(
             tenant: env('POWER_BI_TENANT'),
             clientId: env('POWER_BI_CLIENT_ID'),
             clientSecret: env('POWER_BI_CLIENT_SECRET'),
@@ -77,7 +76,7 @@ describe('GetReport access control', function () {
 
     test('throws exception when ServicePrinciple attempts to access GetReport', function () {
         // Create connection with ServicePrinciple account type
-        $powerBIConnection = new PowerBI(
+        $powerBIConnection = new PowerBIServicePrincipal(
             tenant: env('POWER_BI_TENANT'),
             clientId: env('POWER_BI_CLIENT_ID'),
             clientSecret: env('POWER_BI_CLIENT_SECRET'),
@@ -96,7 +95,7 @@ describe('GetReport access control', function () {
 
     test('throws exception when AdminServicePrinciple attempts to access GetReport', function () {
         // Create connection with ServicePrinciple account type
-        $powerBIConnection = new PowerBI(
+        $powerBIConnection = new PowerBIServicePrincipal(
             tenant: env('POWER_BI_TENANT'),
             clientId: env('POWER_BI_CLIENT_ID'),
             clientSecret: env('POWER_BI_CLIENT_SECRET'),
