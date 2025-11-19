@@ -2,8 +2,8 @@
 
 namespace InterWorks\PowerBI\Connectors;
 
-use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
+use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InvalidArgumentException;
 use Saloon\Helpers\OAuth2\OAuthConfig;
 use Saloon\Http\OAuth2\GetClientCredentialsTokenRequest;

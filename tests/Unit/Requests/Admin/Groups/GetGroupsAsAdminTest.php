@@ -4,7 +4,6 @@ use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Group;
 use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\Exceptions\UnauthorizedAdminAccessException;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Admin\Groups\GetGroupsAsAdmin;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;

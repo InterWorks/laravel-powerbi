@@ -2,8 +2,8 @@
 
 namespace InterWorks\PowerBI\Connectors;
 
-use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
+use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use Saloon\Helpers\OAuth2\OAuthConfig;
 use Saloon\Traits\OAuth2\AuthorizationCodeGrant;
 

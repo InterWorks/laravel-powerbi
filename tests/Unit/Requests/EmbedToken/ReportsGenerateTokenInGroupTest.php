@@ -14,7 +14,7 @@ test('can get an embed token for a report from a specified group', function () {
     ]);
 
     // Create the PowerBI connection and authenticate
-    $powerBIConnection = new PowerBIServicePrincipal();
+    $powerBIConnection = new PowerBIServicePrincipal;
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
 

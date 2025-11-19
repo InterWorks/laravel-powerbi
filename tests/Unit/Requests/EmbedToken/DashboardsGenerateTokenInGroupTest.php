@@ -1,8 +1,8 @@
 <?php
 
 use Carbon\Carbon;
-use InterWorks\PowerBI\DTO\EmbedToken;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
+use InterWorks\PowerBI\DTO\EmbedToken;
 use InterWorks\PowerBI\Requests\EmbedToken\DashboardsGenerateTokenInGroup;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;
@@ -13,7 +13,7 @@ test('can get an embed token for a dashboard from a specified group', function (
     ]);
 
     // Create the PowerBI connection and authenticate
-    $powerBIConnection = new PowerBIServicePrincipal();
+    $powerBIConnection = new PowerBIServicePrincipal;
     $authenticator = $powerBIConnection->getAccessToken();
     $powerBIConnection->authenticate($authenticator);
 
