@@ -41,7 +41,7 @@ class GetReport extends Request
     {
         return [
             ConnectionAccountType::ServicePrinciple,
-            ConnectionAccountType::AdminServicePrinciple
+            ConnectionAccountType::AdminServicePrinciple,
         ];
     }
 
