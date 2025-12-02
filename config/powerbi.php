@@ -51,4 +51,29 @@ return [
     |
     */
     'redirect_uri' => env('POWER_BI_REDIRECT_URI', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Caching Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure API response caching behavior. Caching uses Laravel's default
+    | cache store and is recommended for production to reduce API calls.
+    |
+    */
+    'cache' => [
+        /*
+        | Enable or disable caching for Power BI API responses.
+        | When disabled, all requests bypass cache.
+        */
+        'enabled' => env('POWER_BI_CACHE_ENABLED', true),
+
+        /*
+        | Cache expiry time in seconds. Must be an integer >= 1.
+        | Default: 3600 (1 hour)
+        |
+        | This value cannot be 0 or null. To disable caching, set 'enabled' to false.
+        */
+        'expiry_seconds' => env('POWER_BI_CACHE_EXPIRY_SECONDS', 3600),
+    ],
 ];
