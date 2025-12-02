@@ -125,4 +125,82 @@ test('artifact access entries handle missing sharer field', function () {
 
     expect($entryWithoutSharer->sharer)->toBeNull();
     expect($entryWithoutSharer->shareType)->toBeNull();
-})
+});
+
+test('includes artifact types parameter when provided', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        artifactTypes: [ArtifactType::Report, ArtifactType::Dashboard]
+    );
+
+    $query = $request->query()->all();
+    expect($query)->toHaveKey('artifactTypes', 'Report,Dashboard');
+});
+
+test('does not include artifact types parameter when empty', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        artifactTypes: []
+    );
+
+    $query = $request->query()->all();
+    expect($query)->not->toHaveKey('artifactTypes');
+});
+
+test('request includes continuation token parameter when provided', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        continuationToken: 'next-page-token'
+    );
+
+    $query = $request->query()->all();
+    expect($query)->toHaveKey('continuationToken', 'next-page-token');
+});
+
+test('does not include continuation token parameter when null', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        continuationToken: null
+    );
+
+    $query = $request->query()->all();
+    expect($query)->not->toHaveKey('continuationToken');
+});
+
+test('includes all parameters when provided', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        artifactTypes: [ArtifactType::Report, ArtifactType::Dashboard, ArtifactType::Dataset],
+        continuationToken: 'next-page-token'
+    );
+
+    $query = $request->query()->all();
+    expect($query)->toHaveKey('artifactTypes', 'Report,Dashboard,Dataset');
+    expect($query)->toHaveKey('continuationToken', 'next-page-token');
+});
+
+test('resolves endpoint with user id', function () {
+    $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
+    expect($request->resolveEndpoint())->toBe('/admin/users/test-user@example.com/artifactAccess');
+});
+
+test('accepts all artifact types', function () {
+    $request = new GetUserArtifactAccessAsAdmin(
+        userId: 'test-user@example.com',
+        artifactTypes: [
+            ArtifactType::Report,
+            ArtifactType::PaginatedReport,
+            ArtifactType::Dashboard,
+            ArtifactType::Dataset,
+            ArtifactType::Dataflow,
+            ArtifactType::PersonalGroup,
+            ArtifactType::Group,
+            ArtifactType::Workspace,
+            ArtifactType::Capacity,
+            ArtifactType::App,
+        ]
+    );
+
+    $query = $request->query()->all();
+    expect($query['artifactTypes'])->toBe('Report,PaginatedReport,Dashboard,Dataset,Dataflow,PersonalGroup,Group,Workspace,Capacity,App');
+});
