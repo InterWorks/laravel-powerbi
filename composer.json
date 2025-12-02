@@ -36,6 +36,9 @@
         "phpstan/phpstan-deprecation-rules": "^1.2|^2.0",
         "phpstan/phpstan-phpunit": "^1.4|^2.0"
     },
+    "suggest": {
+        "pestphp/pest-plugin-arch": "For architecture testing (requires Pest v2+)"
+    },
     "autoload": {
         "psr-4": {
             "InterWorks\\PowerBI\\": "src/",
