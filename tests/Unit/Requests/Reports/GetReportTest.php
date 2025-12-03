@@ -43,68 +43,66 @@ test('can get single report', function () {
     expect($report->embedUrl)->toBeString();
 });
 
-describe('GetReport access control', function () {
-    test('allows AzureUser to access GetReport', function () {
-        $mockClient = new MockClient([
-            GetReport::class => new PowerBIFixture('reports/get-report'),
-        ]);
-        // Create connection with AzureUser account type using factory method
-        $powerBIConnection = new PowerBIAzureUser(
-            tenant: env('POWER_BI_TENANT'),
-            clientId: env('POWER_BI_CLIENT_ID'),
-            clientSecret: env('POWER_BI_CLIENT_SECRET'),
-            redirectUri: 'https://localhost/oauth/callback'
-        );
+test('GetReport access control - allows AzureUser to access GetReport', function () {
+    $mockClient = new MockClient([
+        GetReport::class => new PowerBIFixture('reports/get-report'),
+    ]);
+    // Create connection with AzureUser account type using factory method
+    $powerBIConnection = new PowerBIAzureUser(
+        tenant: env('POWER_BI_TENANT'),
+        clientId: env('POWER_BI_CLIENT_ID'),
+        clientSecret: env('POWER_BI_CLIENT_SECRET'),
+        redirectUri: 'https://localhost/oauth/callback'
+    );
 
-        // Creating and attempting to send should NOT throw AccountTypeRestrictedException
-        // If it throws something else (auth error, etc), that's fine - we only care about access control
-        $request = new GetReport(env('POWER_BI_REPORT_ID'));
+    // Creating and attempting to send should NOT throw AccountTypeRestrictedException
+    // If it throws something else (auth error, etc), that's fine - we only care about access control
+    $request = new GetReport(env('POWER_BI_REPORT_ID'));
 
-        try {
-            // We don't care if auth fails - we just want to verify the middleware doesn't block
-            $powerBIConnection->send($request, mockClient: $mockClient);
-        } catch (AccountTypeRestrictedException $e) {
-            // This should NOT happen for AzureUser
-            throw $e;
-        } catch (\Exception $e) {
-            // Any other exception is fine - we're only testing the middleware didn't block it
-        }
+    try {
+        // We don't care if auth fails - we just want to verify the middleware doesn't block
+        $powerBIConnection->send($request, mockClient: $mockClient);
+    } catch (AccountTypeRestrictedException $e) {
+        // This should NOT happen for AzureUser
+        throw $e;
+    } catch (\Exception $e) {
+        // Any other exception is fine - we're only testing the middleware didn't block it
+    }
 
-        // If we got here, the middleware didn't throw AccountTypeRestrictedException
-        expect(true)->toBeTrue();
-    });
+    // If we got here, the middleware didn't throw AccountTypeRestrictedException
+    expect(true)->toBeTrue();
+});
 
-    test('throws exception when ServicePrinciple attempts to access GetReport', function () {
-        // Create connection with ServicePrinciple account type
-        $powerBIConnection = new PowerBIServicePrincipal(
-            tenant: 'test-tenant',
-            clientId: 'test-client-id',
-            clientSecret: 'test-client-secret',
-            connectionAccountType: ConnectionAccountType::ServicePrinciple
-        );
+test('GetReport access control - throws exception when ServicePrinciple attempts to access GetReport', function () {
+    // Create connection with ServicePrinciple account type
+    $powerBIConnection = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        connectionAccountType: ConnectionAccountType::ServicePrinciple
+    );
 
-        // No need to authenticate - the restriction check happens before the HTTP request
-        // Attempt to send the request - should throw before making API call
-        $request = new GetReport('test-report-id');
+    // No need to authenticate - the restriction check happens before the HTTP request
+    // Attempt to send the request - should throw before making API call
+    $request = new GetReport('test-report-id');
 
-        expect(fn () => $powerBIConnection->send($request))
-            ->toThrow(AccountTypeRestrictedException::class, "Account type 'ServicePrinciple' cannot access GET /reports/test-report-id");
-    });
+    expect(fn () => $powerBIConnection->send($request))
+        ->toThrow(AccountTypeRestrictedException::class, "Account type 'ServicePrinciple' cannot access GET /reports/test-report-id");
+});
 
-    test('throws exception when AdminServicePrinciple attempts to access GetReport', function () {
-        // Create connection with AdminServicePrinciple account type
-        $powerBIConnection = new PowerBIServicePrincipal(
-            tenant: 'test-tenant',
-            clientId: 'test-admin-client-id',
-            clientSecret: 'test-admin-client-secret',
-            connectionAccountType: ConnectionAccountType::AdminServicePrinciple
-        );
+test('GetReport access control - throws exception when AdminServicePrinciple attempts to access GetReport', function () {
+    // Create connection with AdminServicePrinciple account type
+    $powerBIConnection = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-admin-client-id',
+        clientSecret: 'test-admin-client-secret',
+        connectionAccountType: ConnectionAccountType::AdminServicePrinciple
+    );
 
-        // No need to authenticate - the restriction check happens before the HTTP request
-        // Attempt to send the request - should throw before making API call
-        $request = new GetReport('test-report-id');
+    // No need to authenticate - the restriction check happens before the HTTP request
+    // Attempt to send the request - should throw before making API call
+    $request = new GetReport('test-report-id');
 
-        expect(fn () => $powerBIConnection->send($request))
-            ->toThrow(AccountTypeRestrictedException::class, "Account type 'AdminServicePrinciple' cannot access GET /reports/test-report-id");
-    });
+    expect(fn () => $powerBIConnection->send($request))
+        ->toThrow(AccountTypeRestrictedException::class, "Account type 'AdminServicePrinciple' cannot access GET /reports/test-report-id");
 });
