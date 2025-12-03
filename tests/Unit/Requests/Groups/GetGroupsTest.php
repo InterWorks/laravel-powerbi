@@ -3,7 +3,6 @@
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Group;
 use InterWorks\PowerBI\DTO\Groups;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;
