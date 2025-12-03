@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\EmbedToken;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\EmbedToken\ReportsGenerateTokenInGroup;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;

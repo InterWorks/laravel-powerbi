@@ -3,7 +3,6 @@
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Dashboard;
 use InterWorks\PowerBI\DTO\Dashboards;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardsInGroup;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;
