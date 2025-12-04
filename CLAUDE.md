@@ -61,7 +61,7 @@ The package uses a hierarchical connector architecture to support multiple OAuth
 **Concrete Connectors**:
 - **`PowerBIServicePrincipal`** (`src/Connectors/PowerBIServicePrincipal.php`):
   - Uses `ClientCredentialsGrant` trait from Saloon
-  - Supports `ServicePrinciple` and `AdminServicePrinciple` account types
+  - Supports `ServicePrincipal` and `AdminServicePrincipal` account types
   - Azure AD v1.0 endpoints with `resource` parameter
   - Token endpoint: `https://login.windows.net/{tenant}/oauth2/token`
   - Server-to-server authentication without user interaction
@@ -77,7 +77,7 @@ The package uses a hierarchical connector architecture to support multiple OAuth
 
 **Factory Class & Facade**:
 - **`PowerBI`** (`src/PowerBI.php`): Factory class that provides:
-  - Static factory methods: `servicePrinciple()`, `adminServicePrinciple()`, `azureUser()`, `create()`
+  - Static factory methods: `servicePrincipal()`, `adminServicePrincipal()`, `azureUser()`, `create()`
   - Singleton connector management: `connector()`, `setConnector()`, `resetConnector()`
   - Authentication helpers: `authenticate()`, `getAccessToken()`
   - Direct request methods: `getGroups()`, `getReportsInGroup()`, `getReportInGroup()`, etc.
@@ -143,8 +143,8 @@ The package supports two OAuth2 authentication flows:
 
 Power BI REST API enforces different access levels based on authentication type:
 
-- **ServicePrinciple**: Can access most endpoints but NOT individual resource endpoints (`/reports/{id}`, `/dashboards/{id}`). Must use group-scoped endpoints instead.
-- **AdminServicePrinciple**: Can access admin endpoints (`/admin/*`) and all non-admin endpoints including individual resources.
+- **ServicePrincipal**: Can access most endpoints but NOT individual resource endpoints (`/reports/{id}`, `/dashboards/{id}`). Must use group-scoped endpoints instead.
+- **AdminServicePrincipal**: Can access admin endpoints (`/admin/*`) and all non-admin endpoints including individual resources.
 - **AzureUser**: Can access all non-admin endpoints including individual resource endpoints.
 
 The package automatically enforces these restrictions via the `HasAccountTypeRestrictions` trait. Requests that use this trait will throw `AccountTypeRestrictedException` before making API calls if the account type is not allowed.
@@ -291,7 +291,7 @@ $dashboards = PowerBI::getDashboardsInGroup('group-id');
 use InterWorks\PowerBI\Facades\PowerBI;
 
 // Switch to admin connector
-$adminConnector = PowerBI::adminServicePrinciple();
+$adminConnector = PowerBI::adminServicePrincipal();
 PowerBI::setConnector($adminConnector);
 
 // Authenticate
@@ -311,14 +311,14 @@ use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
 
 // Create connector with explicit credentials
-$connector = PowerBI::servicePrinciple(
+$connector = PowerBI::servicePrincipal(
     tenant: 'your-tenant-id',
     clientId: 'your-client-id',
     clientSecret: 'your-client-secret'
 );
 
 // Or load from config
-$connector = PowerBI::servicePrinciple();
+$connector = PowerBI::servicePrincipal();
 
 // Authenticate
 $token = $connector->getAccessToken();
@@ -337,7 +337,7 @@ use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Admin\Groups\GetGroupsAsAdmin;
 
 // Using convenience method (loads admin credentials from config)
-$connector = PowerBI::adminServicePrinciple();
+$connector = PowerBI::adminServicePrincipal();
 
 // Authenticate
 $token = $connector->getAccessToken();
@@ -419,7 +419,7 @@ When adding a new Power BI endpoint:
 
        public function restrictedAccountTypes(): array
        {
-           return [ConnectionAccountType::ServicePrinciple];
+           return [ConnectionAccountType::ServicePrincipal];
        }
    }
    ```

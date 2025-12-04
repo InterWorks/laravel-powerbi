@@ -26,8 +26,7 @@ class Report implements WithResponse
         public readonly string $webUrl,
         public readonly string $embedUrl,
         public readonly array $users,
-        public readonly array $subscriptions,
-        public readonly int $reportFlags
+        public readonly array $subscriptions
     ) {}
 
     /**
@@ -46,7 +45,6 @@ class Report implements WithResponse
      *    embedUrl: string,
      *    users: array<int, array<string, mixed>>,
      *    subscriptions: array<int, array<string, mixed>>,
-     *    reportFlags: int,
      * } $item
      */
     public static function fromItem(array $item): self
@@ -64,7 +62,6 @@ class Report implements WithResponse
             embedUrl: $item['embedUrl'],
             users: $item['users'],
             subscriptions: $item['subscriptions'],
-            reportFlags: $item['reportFlags']
         );
     }
 }

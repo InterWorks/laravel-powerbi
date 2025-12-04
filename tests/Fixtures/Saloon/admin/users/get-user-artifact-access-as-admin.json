@@ -1,0 +1,69 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "Date": "Fri, 21 Nov 2025 12:00:00 GMT",
+        "Connection": "close"
+    },
+    "data": {
+        "@odata.context": "http://api.powerbi.com/v1.0/myorg/$metadata#adminArtifacts",
+        "ArtifactAccessEntities": [
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Sales Dashboard",
+                "artifactType": "Dashboard",
+                "accessRight": "Edit",
+                "shareType": "Direct",
+                "sharer": {
+                    "emailAddress": "admin@example.com",
+                    "displayName": "Admin User",
+                    "identifier": "admin-user-id",
+                    "userPrincipalName": "admin@example.com"
+                }
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Financial Report",
+                "artifactType": "Report",
+                "accessRight": "View",
+                "shareType": "Organization",
+                "sharer": {
+                    "emailAddress": "finance@example.com",
+                    "displayName": "Finance Team",
+                    "identifier": "finance-user-id",
+                    "userPrincipalName": "finance@example.com"
+                }
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Customer Dataset",
+                "artifactType": "Dataset",
+                "accessRight": "Edit"
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Marketing Analytics",
+                "artifactType": "Report",
+                "accessRight": "View"
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Operations Workspace",
+                "artifactType": "Workspace",
+                "accessRight": "Admin"
+            }
+        ],
+        "continuationToken": "next-page-token-example",
+        "continuationUri": "https://api.powerbi.com/v1.0/myorg/admin/users/test-user/artifactAccess?continuationToken=next-page-token-example"
+    },
+    "context": []
+}

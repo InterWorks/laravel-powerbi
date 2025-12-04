@@ -43,7 +43,7 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
         ?string $tenant = null,
         ?string $clientId = null,
         ?string $clientSecret = null,
-        ConnectionAccountType $connectionAccountType = ConnectionAccountType::ServicePrinciple,
+        ConnectionAccountType $connectionAccountType = ConnectionAccountType::ServicePrincipal,
     ) {
         // Validate that only Service Principal account types are used with this connector
         if ($connectionAccountType === ConnectionAccountType::AzureUser) {

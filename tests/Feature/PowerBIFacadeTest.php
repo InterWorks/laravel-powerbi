@@ -58,18 +58,18 @@ test('facade accessor returns correct class name', function () {
 // Facade Factory Methods
 //
 
-test('facade servicePrinciple method creates ServicePrincipal connector', function () {
-    $connector = PowerBIFacade::servicePrinciple();
+test('facade servicePrincipal method creates ServicePrincipal connector', function () {
+    $connector = PowerBIFacade::servicePrincipal();
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
-test('facade adminServicePrinciple method creates AdminServicePrincipal connector', function () {
-    $connector = PowerBIFacade::adminServicePrinciple();
+test('facade adminServicePrincipal method creates AdminServicePrincipal connector', function () {
+    $connector = PowerBIFacade::adminServicePrincipal();
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrincipal);
 });
 
 test('facade azureUser method creates AzureUser connector', function () {
@@ -80,7 +80,7 @@ test('facade azureUser method creates AzureUser connector', function () {
 });
 
 test('facade create method works with account type', function () {
-    $connector = PowerBIFacade::create(ConnectionAccountType::ServicePrinciple);
+    $connector = PowerBIFacade::create(ConnectionAccountType::ServicePrincipal);
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
 });
@@ -165,7 +165,7 @@ test('facade can send requests and return DTOs', function () {
 
 test('facade maintains state across multiple calls', function () {
     // Create custom connector
-    $customConnector = PowerBIFacade::servicePrinciple(
+    $customConnector = PowerBIFacade::servicePrincipal(
         tenant: 'custom-tenant',
         clientId: 'custom-client-id',
         clientSecret: 'custom-client-secret'
@@ -179,7 +179,7 @@ test('facade maintains state across multiple calls', function () {
 });
 
 test('facade works with credential overrides', function () {
-    $connector = PowerBIFacade::servicePrinciple(
+    $connector = PowerBIFacade::servicePrincipal(
         tenant: 'override-tenant',
         clientId: 'override-client-id',
         clientSecret: 'override-client-secret'
@@ -192,7 +192,7 @@ test('facade switching between connector types works correctly', function () {
     // Start with ServicePrincipal (default)
     $spConnector = PowerBIFacade::connector();
     expect($spConnector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($spConnector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($spConnector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 
     // Switch to AzureUser
     $azureConnector = PowerBIFacade::azureUser();
@@ -203,16 +203,16 @@ test('facade switching between connector types works correctly', function () {
     expect(PowerBIFacade::connector()->getConnectionAccountType())->toBe(ConnectionAccountType::AzureUser);
 
     // Switch to AdminServicePrincipal
-    $adminConnector = PowerBIFacade::adminServicePrinciple();
+    $adminConnector = PowerBIFacade::adminServicePrincipal();
     PowerBIFacade::setConnector($adminConnector);
 
     expect(PowerBIFacade::connector())->toBe($adminConnector);
     expect(PowerBIFacade::connector())->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect(PowerBIFacade::connector()->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrinciple);
+    expect(PowerBIFacade::connector()->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrincipal);
 
     // Reset back to default
     PowerBIFacade::resetConnector();
     expect(PowerBIFacade::connector())->not->toBe($azureConnector);
     expect(PowerBIFacade::connector())->not->toBe($adminConnector);
-    expect(PowerBIFacade::connector()->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect(PowerBIFacade::connector()->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });

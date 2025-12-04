@@ -15,7 +15,7 @@ test('can get single report', function () {
         GetReport::class => new PowerBIFixture('reports/get-report'),
     ]);
 
-    // Create the PowerBI connection with AdminServicePrinciple (has access to GetReport)
+    // Create the PowerBI connection with AdminServicePrincipal (has access to GetReport)
     // Or use AzureUser - both have access to this endpoint
     $powerBIConnection = new PowerBIAzureUser(
         tenant: env('POWER_BI_TENANT'),
@@ -73,13 +73,13 @@ test('GetReport access control - allows AzureUser to access GetReport', function
     expect(true)->toBeTrue();
 });
 
-test('GetReport access control - throws exception when ServicePrinciple attempts to access GetReport', function () {
-    // Create connection with ServicePrinciple account type
+test('GetReport access control - throws exception when ServicePrincipal attempts to access GetReport', function () {
+    // Create connection with ServicePrincipal account type
     $powerBIConnection = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret',
-        connectionAccountType: ConnectionAccountType::ServicePrinciple
+        connectionAccountType: ConnectionAccountType::ServicePrincipal
     );
 
     // No need to authenticate - the restriction check happens before the HTTP request
@@ -87,16 +87,16 @@ test('GetReport access control - throws exception when ServicePrinciple attempts
     $request = new GetReport('test-report-id');
 
     expect(fn () => $powerBIConnection->send($request))
-        ->toThrow(AccountTypeRestrictedException::class, "Account type 'ServicePrinciple' cannot access GET /reports/test-report-id");
+        ->toThrow(AccountTypeRestrictedException::class, "Account type 'ServicePrincipal' cannot access GET /reports/test-report-id");
 });
 
-test('GetReport access control - throws exception when AdminServicePrinciple attempts to access GetReport', function () {
-    // Create connection with AdminServicePrinciple account type
+test('GetReport access control - throws exception when AdminServicePrincipal attempts to access GetReport', function () {
+    // Create connection with AdminServicePrincipal account type
     $powerBIConnection = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-admin-client-id',
         clientSecret: 'test-admin-client-secret',
-        connectionAccountType: ConnectionAccountType::AdminServicePrinciple
+        connectionAccountType: ConnectionAccountType::AdminServicePrincipal
     );
 
     // No need to authenticate - the restriction check happens before the HTTP request
@@ -104,5 +104,5 @@ test('GetReport access control - throws exception when AdminServicePrinciple att
     $request = new GetReport('test-report-id');
 
     expect(fn () => $powerBIConnection->send($request))
-        ->toThrow(AccountTypeRestrictedException::class, "Account type 'AdminServicePrinciple' cannot access GET /reports/test-report-id");
+        ->toThrow(AccountTypeRestrictedException::class, "Account type 'AdminServicePrincipal' cannot access GET /reports/test-report-id");
 });

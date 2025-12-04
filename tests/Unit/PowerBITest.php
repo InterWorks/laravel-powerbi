@@ -26,27 +26,27 @@ afterEach(function () {
 // Factory Methods
 //
 
-test('servicePrinciple creates ServicePrincipal connector', function () {
-    $connector = PowerBI::servicePrinciple(
+test('servicePrincipal creates ServicePrincipal connector', function () {
+    $connector = PowerBI::servicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'
     );
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
-test('adminServicePrinciple creates AdminServicePrincipal connector', function () {
+test('adminServicePrincipal creates AdminServicePrincipal connector', function () {
     config()->set('powerbi.admin_client_id', 'admin-client-id');
     config()->set('powerbi.admin_client_secret', 'admin-client-secret');
 
-    $connector = PowerBI::adminServicePrinciple(
+    $connector = PowerBI::adminServicePrincipal(
         tenant: 'test-tenant'
     );
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrincipal);
 });
 
 test('azureUser creates AzureUser connector', function () {
@@ -63,7 +63,7 @@ test('azureUser creates AzureUser connector', function () {
 
 test('create method creates correct connector by type', function () {
     $spConnector = PowerBI::create(
-        ConnectionAccountType::ServicePrinciple,
+        ConnectionAccountType::ServicePrincipal,
         [
             'tenant' => 'test-tenant',
             'client_id' => 'test-client-id',
@@ -72,7 +72,7 @@ test('create method creates correct connector by type', function () {
     );
 
     expect($spConnector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($spConnector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($spConnector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 
     $azureConnector = PowerBI::create(
         ConnectionAccountType::AzureUser,
@@ -92,26 +92,26 @@ test('create method creates correct connector by type', function () {
 // Credential Resolution from Config
 //
 
-test('servicePrinciple loads credentials from config when not provided', function () {
+test('servicePrincipal loads credentials from config when not provided', function () {
     config()->set('powerbi.tenant', 'config-tenant');
     config()->set('powerbi.client_id', 'config-client-id');
     config()->set('powerbi.client_secret', 'config-client-secret');
 
-    $connector = PowerBI::servicePrinciple();
+    $connector = PowerBI::servicePrincipal();
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
-test('adminServicePrinciple loads admin credentials from config', function () {
+test('adminServicePrincipal loads admin credentials from config', function () {
     config()->set('powerbi.tenant', 'config-tenant');
     config()->set('powerbi.admin_client_id', 'admin-client-id');
     config()->set('powerbi.admin_client_secret', 'admin-client-secret');
 
-    $connector = PowerBI::adminServicePrinciple();
+    $connector = PowerBI::adminServicePrincipal();
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrincipal);
 });
 
 test('azureUser loads credentials from config when not provided', function () {
@@ -130,7 +130,7 @@ test('explicit credentials override config values', function () {
     config()->set('powerbi.client_id', 'config-client-id');
     config()->set('powerbi.client_secret', 'config-client-secret');
 
-    $connector = PowerBI::servicePrinciple(
+    $connector = PowerBI::servicePrincipal(
         tenant: 'override-tenant',
         clientId: 'override-client-id',
         clientSecret: 'override-client-secret'
@@ -151,7 +151,7 @@ test('connector returns default ServicePrincipal when none set', function () {
     $connector = PowerBI::connector();
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
 test('setConnector changes the singleton connector', function () {

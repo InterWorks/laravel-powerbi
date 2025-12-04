@@ -4,28 +4,28 @@ use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
-test('can create PowerBIServicePrincipal with Service Principle account type', function () {
+test('can create PowerBIServicePrincipal with Service Principal account type', function () {
     $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret',
-        connectionAccountType: ConnectionAccountType::ServicePrinciple
+        connectionAccountType: ConnectionAccountType::ServicePrincipal
     );
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
-test('can create PowerBIServicePrincipal with Service Principle Admin account type', function () {
+test('can create PowerBIServicePrincipal with Service Principal Admin account type', function () {
     $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-admin-client-id',
         clientSecret: 'test-admin-client-secret',
-        connectionAccountType: ConnectionAccountType::AdminServicePrinciple
+        connectionAccountType: ConnectionAccountType::AdminServicePrincipal
     );
 
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::AdminServicePrincipal);
 });
 
 test('throws exception when creating PowerBIServicePrincipal with AzureUser account type', function () {
@@ -50,14 +50,14 @@ test('resolves correct base URL', function () {
     expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
 });
 
-test('uses default Service Principle account type when not specified', function () {
+test('uses default Service Principal account type when not specified', function () {
     $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'
     );
 
-    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrinciple);
+    expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
 });
 
 test('caching can be disabled via config', function () {

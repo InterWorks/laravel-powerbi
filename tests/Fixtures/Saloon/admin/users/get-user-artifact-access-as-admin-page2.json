@@ -1,0 +1,43 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Pragma": "no-cache",
+        "Transfer-Encoding": "chunked",
+        "Content-Type": "application/json; odata.metadata=minimal",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Frame-Options": "deny",
+        "X-Content-Type-Options": "nosniff",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Access-Control-Expose-Headers": "RequestId",
+        "Date": "Fri, 21 Nov 2025 12:00:01 GMT",
+        "Connection": "close"
+    },
+    "data": {
+        "@odata.context": "http://api.powerbi.com/v1.0/myorg/$metadata#adminArtifacts",
+        "ArtifactAccessEntities": [
+            {
+                "artifactId": "REDACTED",
+                "displayName": "HR Dashboard",
+                "artifactType": "Dashboard",
+                "accessRight": "View"
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Quarterly Report",
+                "artifactType": "Report",
+                "accessRight": "Edit"
+            },
+            {
+                "artifactId": "REDACTED",
+                "displayName": "Sales Dataset",
+                "artifactType": "Dataset",
+                "accessRight": "View"
+            }
+        ],
+        "continuationToken": "page3-token-example",
+        "continuationUri": "https://api.powerbi.com/v1.0/myorg/admin/users/test-user/artifactAccess?continuationToken=page3-token-example"
+    },
+    "context": []
+}

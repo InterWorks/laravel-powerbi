@@ -32,8 +32,8 @@ use Saloon\Http\Request;
  *
  * Usage:
  *   // Create connectors
- *   $connector = PowerBI::servicePrinciple();
- *   $connector = PowerBI::adminServicePrinciple();
+ *   $connector = PowerBI::servicePrincipal();
+ *   $connector = PowerBI::adminServicePrincipal();
  *   $connector = PowerBI::azureUser();
  *
  *   // Direct requests using default connector
@@ -60,7 +60,7 @@ class PowerBI
      * @param  string|null  $clientId  Application client ID (defaults to config)
      * @param  string|null  $clientSecret  Application client secret (defaults to config)
      */
-    public static function servicePrinciple(
+    public static function servicePrincipal(
         ?string $tenant = null,
         ?string $clientId = null,
         ?string $clientSecret = null
@@ -69,7 +69,7 @@ class PowerBI
             tenant: $tenant,
             clientId: $clientId,
             clientSecret: $clientSecret,
-            connectionAccountType: ConnectionAccountType::ServicePrinciple
+            connectionAccountType: ConnectionAccountType::ServicePrincipal
         );
     }
 
@@ -84,7 +84,7 @@ class PowerBI
      * @param  string|null  $clientId  Admin application client ID (defaults to config admin_client_id)
      * @param  string|null  $clientSecret  Admin application client secret (defaults to config admin_client_secret)
      */
-    public static function adminServicePrinciple(
+    public static function adminServicePrincipal(
         ?string $tenant = null,
         ?string $clientId = null,
         ?string $clientSecret = null
@@ -98,7 +98,7 @@ class PowerBI
             tenant: $tenant,
             clientId: $clientId ?? $configClientId,
             clientSecret: $clientSecret ?? $configClientSecret,
-            connectionAccountType: ConnectionAccountType::AdminServicePrinciple
+            connectionAccountType: ConnectionAccountType::AdminServicePrincipal
         );
     }
 
@@ -154,12 +154,12 @@ class PowerBI
         array $credentials = []
     ): PowerBIConnectorBase {
         return match ($type) {
-            ConnectionAccountType::ServicePrinciple => static::servicePrinciple(
+            ConnectionAccountType::ServicePrincipal => static::servicePrincipal(
                 tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
                 clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
                 clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null
             ),
-            ConnectionAccountType::AdminServicePrinciple => static::adminServicePrinciple(
+            ConnectionAccountType::AdminServicePrincipal => static::adminServicePrincipal(
                 tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
                 clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
                 clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null
@@ -185,7 +185,7 @@ class PowerBI
     public static function connector(): PowerBIConnectorBase
     {
         if (static::$connector === null) {
-            static::$connector = static::servicePrinciple();
+            static::$connector = static::servicePrincipal();
         }
 
         return static::$connector;

@@ -40,8 +40,8 @@ class GetReport extends Request
     public function restrictedAccountTypes(): array
     {
         return [
-            ConnectionAccountType::ServicePrinciple,
-            ConnectionAccountType::AdminServicePrinciple,
+            ConnectionAccountType::ServicePrincipal,
+            ConnectionAccountType::AdminServicePrincipal,
         ];
     }
 
