@@ -3,7 +3,6 @@
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Dashboard;
 use InterWorks\PowerBI\DTO\Dashboards;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardsInGroup;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;
@@ -13,10 +12,12 @@ test('can get dashboards in group', function () {
         GetDashboardsInGroup::class => new PowerBIFixture('dashboards/get-dashboards-in-group'),
     ]);
 
-    // Create the PowerBI connection and authenticate
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal;
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
 
     // Send the request
     $request = new GetDashboardsInGroup(env('POWER_BI_GROUP_ID'));

@@ -12,10 +12,12 @@ test('can get an embed token for a dashboard from a specified group', function (
         DashboardsGenerateTokenInGroup::class => new PowerBIFixture('embed-token/dashboards-generate-token-in-group'),
     ]);
 
-    // Create the PowerBI connection and authenticate
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal;
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
 
     // Send the request
     $request = new DashboardsGenerateTokenInGroup(env('POWER_BI_GROUP_ID'), env('POWER_BI_DASHBOARD_ID'));

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
@@ -57,4 +58,19 @@ test('uses default Service Principal account type when not specified', function 
     );
 
     expect($connector->getConnectionAccountType())->toBe(ConnectionAccountType::ServicePrincipal);
+});
+
+test('caching can be disabled via config', function () {
+    Config::set('powerbi.cache.enabled', false);
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret'
+    );
+
+    // Create a reflection class to access the protected cachingEnabled property
+    $reflection = new ReflectionClass($connector);
+    $isCachingEnabled = $reflection->getProperty('cachingEnabled');
+    $isCachingEnabled->setAccessible(true);
+    expect($isCachingEnabled->getValue($connector))->toBeFalse();
 });

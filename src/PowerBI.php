@@ -89,10 +89,15 @@ class PowerBI
         ?string $clientId = null,
         ?string $clientSecret = null
     ): PowerBIServicePrincipal {
+        /** @var string $configClientId */
+        $configClientId = Config::get('powerbi.admin_client_id', '');
+        /** @var string $configClientSecret */
+        $configClientSecret = Config::get('powerbi.admin_client_secret', '');
+
         return new PowerBIServicePrincipal(
             tenant: $tenant,
-            clientId: $clientId ?? Config::string('powerbi.admin_client_id'),
-            clientSecret: $clientSecret ?? Config::string('powerbi.admin_client_secret'),
+            clientId: $clientId ?? $configClientId,
+            clientSecret: $clientSecret ?? $configClientSecret,
             connectionAccountType: ConnectionAccountType::AdminServicePrincipal
         );
     }
@@ -116,11 +121,20 @@ class PowerBI
         ?string $clientSecret = null,
         ?string $redirectUri = null
     ): PowerBIAzureUser {
+        /** @var string $configTenant */
+        $configTenant = Config::get('powerbi.tenant', '');
+        /** @var string $configClientId */
+        $configClientId = Config::get('powerbi.client_id', '');
+        /** @var string $configClientSecret */
+        $configClientSecret = Config::get('powerbi.client_secret', '');
+        /** @var string $configRedirectUri */
+        $configRedirectUri = Config::get('powerbi.redirect_uri', '');
+
         return new PowerBIAzureUser(
-            tenant: $tenant ?? Config::string('powerbi.tenant'),
-            clientId: $clientId ?? Config::string('powerbi.client_id'),
-            clientSecret: $clientSecret ?? Config::string('powerbi.client_secret'),
-            redirectUri: $redirectUri ?? Config::string('powerbi.redirect_uri')
+            tenant: $tenant ?? $configTenant,
+            clientId: $clientId ?? $configClientId,
+            clientSecret: $clientSecret ?? $configClientSecret,
+            redirectUri: $redirectUri ?? $configRedirectUri
         );
     }
 

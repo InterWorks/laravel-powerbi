@@ -17,9 +17,27 @@
 >
     <php>
         <env name="APP_ENV" value="testing" />
-        <!-- <env name="POWER_BI_TENANT" value="" /> -->
-        <!-- <env name="POWER_BI_CLIENT_ID" value="" /> -->
-        <!-- <env name="POWER_BI_CLIENT_SECRET" value="" /> -->
+        <env name="POWER_BI_TENANT" value="" />
+
+        <!-- Standard App Setup -->
+        <env name="POWER_BI_CLIENT_ID" value="" />
+        <env name="POWER_BI_CLIENT_SECRET" value="" />
+
+        <!-- Admin App Setup -->
+        <env name="POWER_BI_ADMIN_CLIENT_ID" value="" />
+        <env name="POWER_BI_ADMIN_CLIENT_SECRET" value="" />
+
+        <!-- Azure User OAuth -->
+        <env name="POWER_BI_REDIRECT_URI" value="" />
+
+        <!-- Groups -->
+        <env name="POWER_BI_GROUP_ID" value="" />
+
+        <!-- Reports -->
+        <env name="POWER_BI_REPORT_ID" value="" />
+
+        <!-- Dashboards -->
+        <env name="POWER_BI_DASHBOARD_ID" value="" />
     </php>
     <testsuites>
         <testsuite name="InterWorks Test Suite">

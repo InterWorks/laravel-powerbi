@@ -4,8 +4,11 @@ namespace InterWorks\PowerBI\Connectors;
 
 use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
+use InterWorks\PowerBI\Connectors\Traits\ConnectorCacheSettings;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InvalidArgumentException;
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Helpers\OAuth2\OAuthConfig;
 use Saloon\Http\OAuth2\GetClientCredentialsTokenRequest;
 use Saloon\Http\Request;
@@ -14,9 +17,11 @@ use Saloon\Traits\OAuth2\ClientCredentialsGrant;
 /**
  * Power BI connector for Service Principal authentication using Client Credentials Grant.
  */
-class PowerBIServicePrincipal extends PowerBIConnectorBase
+class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
 {
     use ClientCredentialsGrant;
+    use ConnectorCacheSettings;
+    use HasCaching;
 
     /** @var string The client ID for the Power BI application */
     protected string $clientId;
@@ -48,10 +53,33 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase
             );
         }
 
-        $this->tenant = $tenant ?? Config::string('powerbi.tenant');
-        $this->clientId = $clientId ?? Config::string('powerbi.client_id');
-        $this->clientSecret = $clientSecret ?? Config::string('powerbi.client_secret');
+        /** @var string $configTenant */
+        $configTenant = Config::get('powerbi.tenant', '');
+        /** @var string $configClientId */
+        $configClientId = Config::get('powerbi.client_id', '');
+        /** @var string $configClientSecret */
+        $configClientSecret = Config::get('powerbi.client_secret', '');
+
+        $this->tenant = $tenant ?? $configTenant;
+        $this->clientId = $clientId ?? $configClientId;
+        $this->clientSecret = $clientSecret ?? $configClientSecret;
         $this->connectionAccountType = $connectionAccountType;
+
+        // Configure caching based on package configuration
+        $this->configureCaching();
+    }
+
+    /**
+     * Configure caching based on package configuration.
+     *
+     * Disables caching if config('powerbi.cache.enabled') is false.
+     * This must be called in the constructor before any requests are sent.
+     */
+    protected function configureCaching(): void
+    {
+        if (! (bool) Config::get('powerbi.cache.enabled', true)) {
+            $this->disableCaching();
+        }
     }
 
     /**

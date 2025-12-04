@@ -19,13 +19,17 @@ test('can get groups as admin', function () {
         GetGroupsAsAdmin::class => new PowerBIFixture('admin/groups/get-groups-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
     $request = new GetGroupsAsAdmin;
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
     expect($response->status())->toBe(200);
@@ -133,13 +137,17 @@ test('throws UnauthorizedAdminAccessException when non-admin tries to access adm
         GetGroupsAsAdmin::class => new PowerBIFixture('admin/groups/get-groups-as-admin-401'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
     $request = new GetGroupsAsAdmin;
 
     $powerBIConnection->send($request, mockClient: $mockClient);

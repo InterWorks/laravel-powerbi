@@ -1,13 +1,9 @@
 name: run-tests
 
 on:
-  push:
+  pull_request:
     paths:
-      - '**.php'
-      - '.github/workflows/run-tests.yml'
-      - 'phpunit.xml.dist'
-      - 'composer.json'
-      - 'composer.lock'
+      - "**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,15 +16,34 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         php: [8.4, 8.3, 8.2, 8.1]
-        laravel: [9.*]
+        laravel: [12.*, 11.*, 10.*, 9.*]
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 12.*
             testbench: 10.*
           - laravel: 11.*
             testbench: 9.*
+          - laravel: 10.*
+            testbench: 8.*
+          - laravel: 9.*
+            testbench: 7.*
+        exclude:
+          # Laravel 9 + Package requires PHP 8.1-8.2
+          - laravel: 9.*
+            php: 8.3
+          - laravel: 9.*
+            php: 8.4
+          # Laravel 10 supports PHP 8.1-8.3
+          - laravel: 10.*
+            php: 8.4
+          # Laravel 11 supports PHP 8.2-8.4
+          - laravel: 11.*
+            php: 8.1
+          # Laravel 12 supports PHP 8.2-8.4
+          - laravel: 12.*
+            php: 8.1
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -51,10 +66,16 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-scripts
 
       - name: List Installed Dependencies
         run: composer show -D
 
       - name: Execute tests
+        env:
+          POWER_BI_TENANT: test-tenant
+          POWER_BI_CLIENT_ID: test-client
+          POWER_BI_CLIENT_SECRET: test-client-secret
+          POWER_BI_ADMIN_CLIENT_ID: test-admin-client
+          POWER_BI_ADMIN_CLIENT_SECRET: test-admin-client-secret
         run: vendor/bin/pest --ci

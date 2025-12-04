@@ -3,7 +3,6 @@
 use Carbon\Carbon;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\EmbedToken;
-use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\EmbedToken\ReportsGenerateTokenInGroup;
 use InterWorks\PowerBI\Tests\Fixtures\PowerBIFixture;
 use Saloon\Http\Faking\MockClient;
@@ -13,10 +12,12 @@ test('can get an embed token for a report from a specified group', function () {
         ReportsGenerateTokenInGroup::class => new PowerBIFixture('embed-token/reports-generate-token-in-group'),
     ]);
 
-    // Create the PowerBI connection and authenticate
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal;
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
 
     // Send the request
     $request = new ReportsGenerateTokenInGroup(env('POWER_BI_GROUP_ID'), env('POWER_BI_REPORT_ID'));

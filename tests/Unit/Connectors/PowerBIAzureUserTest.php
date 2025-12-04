@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
@@ -86,4 +87,35 @@ test('authorization URL includes default Power BI scopes', function () {
     // Scopes should be URL-encoded in the URL
     expect($authUrl)->toContain('scope=');
     expect($authUrl)->toContain('offline_access'); // For refresh token
+});
+
+test('caching is enabled by default', function () {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    // Create a reflection class to access the protected cachingEnabled property
+    $reflection = new ReflectionClass($connector);
+    $isCachingEnabled = $reflection->getProperty('cachingEnabled');
+    $isCachingEnabled->setAccessible(true);
+    expect($isCachingEnabled->getValue($connector))->toBeTrue();
+});
+
+test('caching can be disabled via config', function () {
+    Config::set('powerbi.cache.enabled', false);
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    // Create a reflection class to access the protected cachingEnabled property
+    $reflection = new ReflectionClass($connector);
+    $isCachingEnabled = $reflection->getProperty('cachingEnabled');
+    $isCachingEnabled->setAccessible(true);
+    expect($isCachingEnabled->getValue($connector))->toBeFalse();
 });

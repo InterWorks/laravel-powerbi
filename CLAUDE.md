@@ -168,6 +168,59 @@ The package uses Spatie's `laravel-package-tools` for service provider scaffoldi
 - Service provider: `src/PowerBIServiceProvider.php`
 - Facade: `src/Facades/PowerBI.php`
 
+## Caching Configuration
+
+The package caches Power BI API responses using Laravel's default cache store.
+
+### Configuration Options
+
+Configure caching in `config/powerbi.php`:
+
+```php
+'cache' => [
+    'enabled' => env('POWER_BI_CACHE_ENABLED', true),
+    'expiry_seconds' => env('POWER_BI_CACHE_EXPIRY_SECONDS', 3600),
+],
+```
+
+### Environment Variables
+
+```bash
+# Enable/disable caching (default: true)
+POWER_BI_CACHE_ENABLED=true
+
+# Cache expiry in seconds, must be >= 1 (default: 3600)
+POWER_BI_CACHE_EXPIRY_SECONDS=3600
+```
+
+### Cache Store
+
+The package uses Laravel's **default cache store** from `config/cache.php`. To use a specific store (e.g., Redis):
+
+```bash
+CACHE_DRIVER=redis
+```
+
+### Disabling Caching
+
+To disable caching entirely:
+
+```bash
+POWER_BI_CACHE_ENABLED=false
+```
+
+### Validation Rules
+
+- `expiry_seconds` must be an integer >= 1
+- Setting to 0 or null throws `InvalidArgumentException`
+- To disable caching, use `cache.enabled = false`, not `expiry_seconds = 0`
+
+### Caching Behavior
+
+- Responses cached per request URL and parameters
+- Cache keys generated automatically by Saloon
+- Cache uses the connector's authenticated context
+
 ## Static Analysis
 
 PHPStan configuration (`phpstan.neon`):
