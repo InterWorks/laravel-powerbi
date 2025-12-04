@@ -15,13 +15,18 @@ test('can get user artifact access as admin', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
 
@@ -34,13 +39,18 @@ test('response includes continuation token when available', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
 
@@ -56,13 +66,18 @@ test('artifact access entries have correct structure', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
 
@@ -84,13 +99,18 @@ test('artifact access entries include sharer when available', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
 
@@ -109,13 +129,18 @@ test('artifact access entries handle missing sharer field', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
 
@@ -221,13 +246,18 @@ test('getAllPages fetches all results across multiple pages', function () {
         },
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
 
     $request = new GetUserArtifactAccessAsAdmin(
         userId: 'test-user@example.com',
@@ -257,13 +287,18 @@ test('getAllPages handles single page with no continuation token', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin-page3'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
 
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $allResults = $request->getAllPages($powerBIConnection, $mockClient);
@@ -302,13 +337,18 @@ test('extractCollectionFromDto returns correct collection', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
 
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
@@ -330,13 +370,18 @@ test('extractContinuationToken returns correct token', function () {
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
 
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
@@ -357,13 +402,18 @@ test('extractContinuationToken returns null when no token present', function () 
         GetUserArtifactAccessAsAdmin::class => new PowerBIFixture('admin/users/get-user-artifact-access-as-admin-page3'),
     ]);
 
+    // Create the Service Principal connection
     $powerBIConnection = new PowerBIServicePrincipal(
         env('POWER_BI_TENANT'),
         env('POWER_BI_CLIENT_ID'),
         env('POWER_BI_CLIENT_SECRET')
     );
-    $authenticator = $powerBIConnection->getAccessToken();
-    $powerBIConnection->authenticate($authenticator);
+
+    // Token authentication only needed when recording responses
+    // $authenticator = $powerBIConnection->getAccessToken();
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
 
     $request = new GetUserArtifactAccessAsAdmin(userId: 'test-user@example.com');
     $response = $powerBIConnection->send($request, mockClient: $mockClient);
