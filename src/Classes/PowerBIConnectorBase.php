@@ -39,7 +39,7 @@ abstract class PowerBIConnectorBase extends Connector
     public function boot(PendingRequest $pendingRequest): void
     {
         // Get the datetime at the moment the request is being prepared and add it as a header for logging purposes
-        $pendingRequest->headers()->add('X-Start-Time', (new \DateTime())->getTimestamp());
+        $pendingRequest->headers()->add('X-Start-Time', (new \DateTime)->getTimestamp());
     }
 
     /**
