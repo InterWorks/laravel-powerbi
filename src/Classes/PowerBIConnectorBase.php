@@ -8,6 +8,7 @@ use InterWorks\PowerBI\Exceptions\UnauthorizedAdminAccessException;
 use InterWorks\PowerBI\Requests\Concerns\HasAccountTypeRestrictions;
 use Saloon\Http\Connector;
 use Saloon\Http\Faking\MockClient;
+use Saloon\Http\PendingRequest;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Plugins\AcceptsJson;
@@ -34,6 +35,12 @@ abstract class PowerBIConnectorBase extends Connector
 
     /** @var ConnectionAccountType The connection account type */
     protected ConnectionAccountType $connectionAccountType;
+
+    public function boot(PendingRequest $pendingRequest): void
+    {
+        // Get the datetime at the moment the request is being prepared and add it as a header for logging purposes
+        $pendingRequest->headers()->add('X-Start-Time', (new \DateTime)->getTimestamp());
+    }
 
     /**
      * The Base URL of the API.
