@@ -43,6 +43,39 @@ test('can get single report', function () {
     expect($report->embedUrl)->toBeString();
 });
 
+test('can get single report - missing datasetId', function () {
+    $mockClient = new MockClient([
+        GetReport::class => new PowerBIFixture('reports/get-report-no-dataset-id'),
+    ]);
+
+    // Create the PowerBI connection with AdminServicePrincipal (has access to GetReport)
+    // Or use AzureUser - both have access to this endpoint
+    $powerBIConnection = new PowerBIAzureUser(
+        tenant: env('POWER_BI_TENANT'),
+        clientId: env('POWER_BI_CLIENT_ID'),
+        clientSecret: env('POWER_BI_CLIENT_SECRET'),
+        redirectUri: 'https://fakeurl.non/callback'
+    );
+
+    // REMINDER: We cannot test the full OAuth flow due to the need for user interaction/redirect; this step is skipped.
+    // $authenticator = $powerBIConnection->getAuthorizationUrl('fake-code', 'fake-state');
+    // $powerBIConnection->authenticate($authenticator);
+
+    // Send the request
+    $request = new GetReport(env('POWER_BI_REPORT_ID'));
+    $response = $powerBIConnection->send($request, mockClient: $mockClient);
+
+    // Validate the response
+    expect($response->status())->toBe(200);
+    expect($response->dto())->toBeInstanceOf(Report::class);
+    $report = $response->dto();
+    expect($report->datasetId)->toBeNull(); // NULL
+    expect($report->id)->toBeString();
+    expect($report->name)->toBeString();
+    expect($report->webUrl)->toBeString();
+    expect($report->embedUrl)->toBeString();
+});
+
 test('GetReport access control - allows AzureUser to access GetReport', function () {
     $mockClient = new MockClient([
         GetReport::class => new PowerBIFixture('reports/get-report'),
