@@ -244,7 +244,7 @@ test('getGroups sends GetGroups request', function () {
     ]);
 
     // Create a connector directly to avoid getAccessToken() call
-    $connector = new \InterWorks\PowerBI\Connectors\PowerBIServicePrincipal(
+    $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'
@@ -263,7 +263,7 @@ test('getReportInGroup sends GetReportInGroup request', function () {
     ]);
 
     // Create a connector directly to avoid getAccessToken() call
-    $connector = new \InterWorks\PowerBI\Connectors\PowerBIServicePrincipal(
+    $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'
@@ -282,7 +282,7 @@ test('send method sends request and returns DTO', function () {
     ]);
 
     // Create a connector directly to avoid getAccessToken() call
-    $connector = new \InterWorks\PowerBI\Connectors\PowerBIServicePrincipal(
+    $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'

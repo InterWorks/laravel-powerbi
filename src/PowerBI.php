@@ -12,6 +12,7 @@ use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\DTO\Reports;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
+use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardInGroup;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardsInGroup;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
@@ -296,7 +297,7 @@ class PowerBI
      *
      * @param  string  $reportId  The report ID
      *
-     * @throws \InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException
+     * @throws AccountTypeRestrictedException
      */
     public static function getReport(string $reportId): Report
     {
