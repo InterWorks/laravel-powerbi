@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
+## 0.1.0 - 2026-03-31
+
+### Major Version update
+
+*New min requirement*: Laravel 11
+
+https://github.com/InterWorks/laravel-powerbi/pull/16  Upgrades Saloon to v4.0
+
 ## 0.0.3 - 2026-02-09
 
 ### Bug Fixes:
