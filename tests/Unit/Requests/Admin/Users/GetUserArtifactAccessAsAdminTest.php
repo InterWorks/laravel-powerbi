@@ -319,7 +319,7 @@ test('withOnlyContinuationToken creates request without artifact types', functio
     );
 
     // Use reflection to call protected method
-    $reflection = new \ReflectionClass($originalRequest);
+    $reflection = new ReflectionClass($originalRequest);
     $method = $reflection->getMethod('withOnlyContinuationToken');
     $method->setAccessible(true);
 
@@ -355,7 +355,7 @@ test('extractCollectionFromDto returns correct collection', function () {
     $dto = $response->dto();
 
     // Use reflection to test protected method
-    $reflection = new \ReflectionClass($request);
+    $reflection = new ReflectionClass($request);
     $method = $reflection->getMethod('extractCollectionFromDto');
     $method->setAccessible(true);
 
@@ -388,7 +388,7 @@ test('extractContinuationToken returns correct token', function () {
     $dto = $response->dto();
 
     // Use reflection to test protected method
-    $reflection = new \ReflectionClass($request);
+    $reflection = new ReflectionClass($request);
     $method = $reflection->getMethod('extractContinuationToken');
     $method->setAccessible(true);
 
@@ -420,7 +420,7 @@ test('extractContinuationToken returns null when no token present', function () 
     $dto = $response->dto();
 
     // Use reflection to test protected method
-    $reflection = new \ReflectionClass($request);
+    $reflection = new ReflectionClass($request);
     $method = $reflection->getMethod('extractContinuationToken');
     $method->setAccessible(true);
 

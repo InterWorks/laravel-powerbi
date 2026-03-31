@@ -98,7 +98,7 @@ test('GetReport access control - allows AzureUser to access GetReport', function
     } catch (AccountTypeRestrictedException $e) {
         // This should NOT happen for AzureUser
         throw $e;
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Any other exception is fine - we're only testing the middleware didn't block it
     }
 
