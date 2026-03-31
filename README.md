@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/interworks/laravel-powerbi/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/interworks/laravel-powerbi/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/interworks/laravel-powerbi.svg?style=flat-square)](https://packagist.org/packages/interworks/laravel-powerbi)
 
-A comprehensive Laravel package for interacting with the Microsoft Power BI REST API. Built on [Saloon v3](https://docs.saloon.dev/) with type-safe responses, automatic caching, and multiple OAuth2 authentication flows.
+A comprehensive Laravel package for interacting with the Microsoft Power BI REST API. Built on [Saloon v4](https://docs.saloon.dev/) with type-safe responses, automatic caching, and multiple OAuth2 authentication flows.
 
 ## Features
 
@@ -199,7 +199,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 - [mrkbingham](https://github.com/mrkbingham)
 - [All Contributors](../../contributors)
 
-Built with [Saloon v3](https://docs.saloon.dev/).
+Built with [Saloon v4](https://docs.saloon.dev/).
 
 ## License
 
