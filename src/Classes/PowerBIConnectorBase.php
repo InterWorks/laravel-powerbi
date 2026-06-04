@@ -36,6 +36,9 @@ abstract class PowerBIConnectorBase extends Connector
     /** @var ConnectionAccountType The connection account type */
     protected ConnectionAccountType $connectionAccountType;
 
+    /** @var string The Microsoft cloud environment (see CloudEnvironment constants) */
+    protected string $cloudEnvironment = CloudEnvironment::COMMERCIAL;
+
     public function boot(PendingRequest $pendingRequest): void
     {
         // Get the datetime at the moment the request is being prepared and add it as a header for logging purposes
@@ -44,10 +47,12 @@ abstract class PowerBIConnectorBase extends Connector
 
     /**
      * The Base URL of the API.
+     *
+     * Resolves to the correct Power BI REST API host for the connector's cloud environment.
      */
     public function resolveBaseUrl(): string
     {
-        return 'https://api.powerbi.com/v1.0/myorg';
+        return CloudEnvironment::getBaseUrl($this->cloudEnvironment);
     }
 
     /**
@@ -56,6 +61,14 @@ abstract class PowerBIConnectorBase extends Connector
     public function getConnectionAccountType(): ConnectionAccountType
     {
         return $this->connectionAccountType;
+    }
+
+    /**
+     * Get the cloud environment identifier in use by this connector.
+     */
+    public function getCloudEnvironment(): string
+    {
+        return $this->cloudEnvironment;
     }
 
     /**

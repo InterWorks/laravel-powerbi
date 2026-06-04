@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
+use InterWorks\PowerBI\Classes\CloudEnvironment;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
@@ -48,6 +49,53 @@ test('resolves correct base URL', function () {
     );
 
     expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('defaults to commercial cloud environment when not specified', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::COMMERCIAL);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('resolves GCC base URL when constructed with the GCC environment', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: CloudEnvironment::GCC
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbigov.us/v1.0/myorg');
+});
+
+test('normalizes an unknown cloud environment to commercial', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: 'mars-cloud'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::COMMERCIAL);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('reads cloud environment from config when not explicitly passed', function () {
+    Config::set('powerbi.cloud_environment', CloudEnvironment::DOD);
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::DOD);
+    expect($connector->resolveBaseUrl())->toBe('https://api.mil.powerbigov.us/v1.0/myorg');
 });
 
 test('uses default Service Principal account type when not specified', function () {

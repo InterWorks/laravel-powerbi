@@ -15,6 +15,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Microsoft Cloud Environment
+    |--------------------------------------------------------------------------
+    |
+    | The Microsoft cloud that hosts your Power BI tenant. This routes all API
+    | and authentication requests to the correct endpoints. Leave as 'commercial'
+    | unless your tenant is hosted in a US Government sovereign cloud.
+    |
+    | Supported values: 'commercial', 'gcc', 'gcc_high', 'dod'.
+    | Any unrecognized value falls back to 'commercial'.
+    |
+    */
+    'cloud_environment' => env('POWER_BI_CLOUD_ENVIRONMENT', 'commercial'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Service Principal Credentials (Client Credentials Grant)
     |--------------------------------------------------------------------------
     |

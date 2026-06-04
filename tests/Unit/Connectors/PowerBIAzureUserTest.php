@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
+use InterWorks\PowerBI\Classes\CloudEnvironment;
 use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
@@ -53,6 +54,47 @@ test('can generate authorization URL', function () {
     expect($authUrl)->toContain('client_id=test-client-id');
     expect($authUrl)->toContain('redirect_uri=https');
     expect($authUrl)->toContain('response_type=code');
+});
+
+test('defaults to commercial cloud environment when not specified', function () {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::COMMERCIAL);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('resolves GCC base URL and gov authorization endpoint for the GCC environment', function () {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback',
+        cloudEnvironment: CloudEnvironment::GCC
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbigov.us/v1.0/myorg');
+
+    $authUrl = $connector->getAuthorizationUrl();
+    expect($authUrl)->toContain('https://login.microsoftonline.us/test-tenant/oauth2/authorize');
+});
+
+test('reads cloud environment from config when not explicitly passed', function () {
+    Config::set('powerbi.cloud_environment', CloudEnvironment::GCC_HIGH);
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC_HIGH);
+    expect($connector->resolveBaseUrl())->toBe('https://api.high.powerbigov.us/v1.0/myorg');
 });
 
 test('can retrieve state for CSRF protection', function () {
