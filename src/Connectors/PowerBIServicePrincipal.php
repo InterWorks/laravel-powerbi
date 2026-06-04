@@ -3,6 +3,7 @@
 namespace InterWorks\PowerBI\Connectors;
 
 use Illuminate\Support\Facades\Config;
+use InterWorks\PowerBI\Classes\CloudEnvironment;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
 use InterWorks\PowerBI\Connectors\Traits\ConnectorCacheSettings;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
@@ -36,6 +37,7 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
      * @param  string  $clientId  The application (client) ID
      * @param  string  $clientSecret  The application client secret
      * @param  ConnectionAccountType  $connectionAccountType  The service principal account type
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
      *
      * @throws InvalidArgumentException When invalid account type is provided
      */
@@ -44,6 +46,7 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
         ?string $clientId = null,
         ?string $clientSecret = null,
         ConnectionAccountType $connectionAccountType = ConnectionAccountType::ServicePrincipal,
+        ?string $cloudEnvironment = null,
     ) {
         // Validate that only Service Principal account types are used with this connector
         if ($connectionAccountType === ConnectionAccountType::AzureUser) {
@@ -59,11 +62,14 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
         $configClientId = Config::get('powerbi.client_id', '');
         /** @var string $configClientSecret */
         $configClientSecret = Config::get('powerbi.client_secret', '');
+        /** @var string $configCloudEnvironment */
+        $configCloudEnvironment = Config::get('powerbi.cloud_environment', CloudEnvironment::COMMERCIAL);
 
         $this->tenant = $tenant ?? $configTenant;
         $this->clientId = $clientId ?? $configClientId;
         $this->clientSecret = $clientSecret ?? $configClientSecret;
         $this->connectionAccountType = $connectionAccountType;
+        $this->cloudEnvironment = CloudEnvironment::normalize($cloudEnvironment ?? $configCloudEnvironment);
 
         // Configure caching based on package configuration
         $this->configureCaching();
@@ -103,18 +109,18 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
     }
 
     /**
-     * Returns the Azure AD v1.0 token endpoint.
+     * Returns the Azure AD v1.0 token endpoint for the connector's cloud environment.
      */
     private function getTokenEndpoint(): string
     {
-        return "https://login.windows.net/{$this->tenant}/oauth2/token";
+        return CloudEnvironment::getTokenEndpoint($this->cloudEnvironment, $this->tenant);
     }
 
     /**
-     * Returns the Power BI API resource URL.
+     * Returns the Power BI API resource URL for the connector's cloud environment.
      */
     private function getResourceUrl(): string
     {
-        return 'https://analysis.windows.net/powerbi/api';
+        return CloudEnvironment::getResourceUrl($this->cloudEnvironment);
     }
 }

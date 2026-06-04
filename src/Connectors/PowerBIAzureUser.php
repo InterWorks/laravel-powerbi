@@ -3,6 +3,7 @@
 namespace InterWorks\PowerBI\Connectors;
 
 use Illuminate\Support\Facades\Config;
+use InterWorks\PowerBI\Classes\CloudEnvironment;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
 use InterWorks\PowerBI\Connectors\Traits\ConnectorCacheSettings;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
@@ -39,17 +40,23 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
      * @param  string  $clientId  The application (client) ID
      * @param  string  $clientSecret  The application client secret
      * @param  string  $redirectUri  The OAuth callback/redirect URI
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
      */
     public function __construct(
         string $tenant,
         string $clientId,
         string $clientSecret,
         string $redirectUri,
+        ?string $cloudEnvironment = null,
     ) {
+        /** @var string $configCloudEnvironment */
+        $configCloudEnvironment = Config::get('powerbi.cloud_environment', CloudEnvironment::COMMERCIAL);
+
         $this->tenant = $tenant;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->redirectUri = $redirectUri;
+        $this->cloudEnvironment = CloudEnvironment::normalize($cloudEnvironment ?? $configCloudEnvironment);
 
         // Configure caching based on package configuration
         $this->configureCaching();
@@ -82,18 +89,18 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
     }
 
     /**
-     * Returns the Azure AD v2.0 authorization endpoint.
+     * Returns the authorization endpoint for the connector's cloud environment.
      */
     private function getAuthorizationEndpoint(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenant}/oauth2/authorize";
+        return CloudEnvironment::getAuthorizeEndpoint($this->cloudEnvironment, $this->tenant);
     }
 
     /**
-     * Returns the Azure AD v2.0 token endpoint.
+     * Returns the token endpoint for the connector's cloud environment.
      */
     private function getTokenEndpoint(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenant}/oauth2/token";
+        return CloudEnvironment::getTokenEndpoint($this->cloudEnvironment, $this->tenant);
     }
 }

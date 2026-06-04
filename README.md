@@ -41,6 +41,10 @@ Add your Power BI credentials to your `.env` file:f
 # Azure AD Configuration
 POWER_BI_TENANT=your-tenant-id
 
+# Cloud Environment (Optional)
+# One of: commercial (default), gcc, gcc_high, dod
+POWER_BI_CLOUD_ENVIRONMENT=commercial
+
 # Service Principal (Client Credentials)
 POWER_BI_CLIENT_ID=your-client-id
 POWER_BI_CLIENT_SECRET=your-client-secret
@@ -56,6 +60,31 @@ POWER_BI_REDIRECT_URI=https://your-app.com/auth/powerbi/callback
 POWER_BI_CACHE_ENABLED=true
 POWER_BI_CACHE_EXPIRY_SECONDS=3600
 ```
+
+### US Government Sovereign Clouds (GCC, GCC High, DoD)
+
+Power BI tenants on Microsoft US Government licenses use different REST API and authentication
+endpoints than the commercial cloud. Set `POWER_BI_CLOUD_ENVIRONMENT` (or pass `cloudEnvironment`
+to any factory method / connector) to route requests to the correct endpoints:
+
+| Environment | Power BI API base | Entra authority | Resource URL |
+|---|---|---|---|
+| `commercial` | `api.powerbi.com` | `login.microsoftonline.com` | `analysis.windows.net/powerbi/api` |
+| `gcc` | `api.powerbigov.us` | `login.microsoftonline.us` | `analysis.usgovcloudapi.net/powerbi/api` |
+| `gcc_high` | `api.high.powerbigov.us` | `login.microsoftonline.us` | `high.analysis.usgovcloudapi.net/powerbi/api` |
+| `dod` | `api.mil.powerbigov.us` | `login.microsoftonline.us` | `mil.analysis.usgovcloudapi.net/powerbi/api` |
+
+```php
+// Explicit per-connector override
+$connector = PowerBI::servicePrincipal(
+    tenant: 'your-tenant-id',
+    clientId: 'your-client-id',
+    clientSecret: 'your-client-secret',
+    cloudEnvironment: 'gcc'
+);
+```
+
+Any unrecognized value falls back to `commercial`.
 
 ## Quick Start
 

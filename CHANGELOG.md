@@ -2,6 +2,26 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
+## 0.0.4 - 2026-06-04
+
+### Added
+
+- **Microsoft US Government sovereign cloud support** (GCC, GCC High / DoDCON, DoD). A new
+  `cloud_environment` config option (`POWER_BI_CLOUD_ENVIRONMENT`) and a `cloudEnvironment`
+  argument on every factory method and connector route the REST API, OAuth authorize/token,
+  and the Power BI resource URL to the correct sovereign endpoints. Defaults to `commercial`;
+  unrecognized values fall back to `commercial`, so existing usage is unaffected.
+- New `InterWorks\PowerBI\Classes\CloudEnvironment` helper centralizing per-cloud URL resolution.
+
+### Note
+
+- The Service Principal token host moved from the legacy `login.windows.net` alias to
+  `login.microsoftonline.com` for the commercial cloud. These are functionally equivalent
+  Azure AD v1.0 endpoints.
+
+This release targets the Saloon v3 / Laravel 9+ line (the `0.0.x` series). The same feature
+will be forward-ported to the Saloon v4 `main` line separately.
+
 ## v0.0.1 - 2026-01-08
 
 ### Initial Release
