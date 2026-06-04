@@ -4,6 +4,7 @@ namespace InterWorks\PowerBI\Requests\Concerns;
 
 use Illuminate\Support\Collection;
 use Saloon\Http\Connector;
+use Saloon\Http\Faking\MockClient;
 
 /**
  * Trait to handle automatic pagination through continuation token-based API responses.
@@ -36,10 +37,10 @@ trait HasContinuationTokenPagination
      * Subsequent requests use only required parameters + continuation token.
      *
      * @param  Connector  $connector  The connector to send requests through
-     * @param  \Saloon\Http\Faking\MockClient|null  $mockClient  Optional mock client for testing
+     * @param  MockClient|null  $mockClient  Optional mock client for testing
      * @return Collection<int, mixed> All results merged across all pages
      */
-    public function getAllPages(Connector $connector, ?\Saloon\Http\Faking\MockClient $mockClient = null): Collection
+    public function getAllPages(Connector $connector, ?MockClient $mockClient = null): Collection
     {
         $allResults = collect();
         $continuationToken = null;

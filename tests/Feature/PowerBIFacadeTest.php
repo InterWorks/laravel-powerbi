@@ -145,7 +145,7 @@ test('facade can send requests and return DTOs', function () {
     ]);
 
     // Create a test connector to avoid getAccessToken() call
-    $testConnector = new \InterWorks\PowerBI\Connectors\PowerBIServicePrincipal(
+    $testConnector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
         clientSecret: 'test-client-secret'
