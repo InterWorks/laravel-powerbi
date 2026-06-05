@@ -23,7 +23,8 @@ return [
     | unless your tenant is hosted in a US Government sovereign cloud.
     |
     | Supported values: 'commercial', 'gcc', 'gcc_high', 'dod'.
-    | Any unrecognized value falls back to 'commercial'.
+    | A missing or empty value defaults to 'commercial'; any other unrecognized
+    | value throws an InvalidArgumentException when a connector is created.
     |
     */
     'cloud_environment' => env('POWER_BI_CLOUD_ENVIRONMENT', 'commercial'),

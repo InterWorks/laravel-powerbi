@@ -35,7 +35,7 @@ Publish the configuration file:
 php artisan vendor:publish --tag="laravel-powerbi-config"
 ```
 
-Add your Power BI credentials to your `.env` file:f
+Add your Power BI credentials to your `.env` file:
 
 ```env
 # Azure AD Configuration
@@ -84,7 +84,13 @@ $connector = PowerBI::servicePrincipal(
 );
 ```
 
-Any unrecognized value falls back to `commercial`.
+A missing or empty value defaults to `commercial`. Any other unrecognized value (e.g. a typo like
+`gcc-high`) throws an `InvalidArgumentException` when the connector is created, so a sovereign-cloud
+tenant can never be silently routed to the commercial endpoints.
+
+> **Note:** When using the Azure User flow with explicit OAuth scopes, make sure your scope strings
+> reference the resource URL for your cloud environment (see the table above) rather than the
+> commercial `analysis.windows.net/powerbi/api` resource.
 
 ## Quick Start
 

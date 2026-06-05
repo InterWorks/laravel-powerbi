@@ -3,7 +3,6 @@
 namespace InterWorks\PowerBI\Connectors;
 
 use Illuminate\Support\Facades\Config;
-use InterWorks\PowerBI\Classes\CloudEnvironment;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
 use InterWorks\PowerBI\Connectors\Traits\ConnectorCacheSettings;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
@@ -41,6 +40,8 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
      * @param  string  $clientSecret  The application client secret
      * @param  string  $redirectUri  The OAuth callback/redirect URI
      * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
+     *
+     * @throws \InvalidArgumentException When an invalid cloud environment is provided
      */
     public function __construct(
         string $tenant,
@@ -49,14 +50,11 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
         string $redirectUri,
         ?string $cloudEnvironment = null,
     ) {
-        /** @var string $configCloudEnvironment */
-        $configCloudEnvironment = Config::get('powerbi.cloud_environment', CloudEnvironment::COMMERCIAL);
-
         $this->tenant = $tenant;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->redirectUri = $redirectUri;
-        $this->cloudEnvironment = CloudEnvironment::normalize($cloudEnvironment ?? $configCloudEnvironment);
+        $this->cloudEnvironment = $this->resolveCloudEnvironment($cloudEnvironment);
 
         // Configure caching based on package configuration
         $this->configureCaching();
@@ -93,7 +91,7 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
      */
     private function getAuthorizationEndpoint(): string
     {
-        return CloudEnvironment::getAuthorizeEndpoint($this->cloudEnvironment, $this->tenant);
+        return $this->cloudEnvironment->authorizeEndpoint($this->tenant);
     }
 
     /**
@@ -101,6 +99,6 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
      */
     private function getTokenEndpoint(): string
     {
-        return CloudEnvironment::getTokenEndpoint($this->cloudEnvironment, $this->tenant);
+        return $this->cloudEnvironment->tokenEndpoint($this->tenant);
     }
 }

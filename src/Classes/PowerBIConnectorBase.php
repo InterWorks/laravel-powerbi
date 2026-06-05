@@ -2,6 +2,8 @@
 
 namespace InterWorks\PowerBI\Classes;
 
+use Illuminate\Support\Facades\Config;
+use InterWorks\PowerBI\Enums\CloudEnvironment;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
 use InterWorks\PowerBI\Exceptions\UnauthorizedAdminAccessException;
@@ -36,8 +38,8 @@ abstract class PowerBIConnectorBase extends Connector
     /** @var ConnectionAccountType The connection account type */
     protected ConnectionAccountType $connectionAccountType;
 
-    /** @var string The Microsoft cloud environment (see CloudEnvironment constants) */
-    protected string $cloudEnvironment = CloudEnvironment::COMMERCIAL;
+    /** @var CloudEnvironment The Microsoft cloud environment */
+    protected CloudEnvironment $cloudEnvironment = CloudEnvironment::Commercial;
 
     public function boot(PendingRequest $pendingRequest): void
     {
@@ -52,7 +54,7 @@ abstract class PowerBIConnectorBase extends Connector
      */
     public function resolveBaseUrl(): string
     {
-        return CloudEnvironment::getBaseUrl($this->cloudEnvironment);
+        return $this->cloudEnvironment->baseUrl();
     }
 
     /**
@@ -64,11 +66,28 @@ abstract class PowerBIConnectorBase extends Connector
     }
 
     /**
-     * Get the cloud environment identifier in use by this connector.
+     * Get the cloud environment in use by this connector.
      */
-    public function getCloudEnvironment(): string
+    public function getCloudEnvironment(): CloudEnvironment
     {
         return $this->cloudEnvironment;
+    }
+
+    /**
+     * Resolve the cloud environment from an explicit override, falling back to config.
+     *
+     * @param  string|null  $cloudEnvironment  Explicit cloud environment identifier, or null to use config
+     *
+     * @throws \InvalidArgumentException When the value is not a supported cloud environment
+     */
+    protected function resolveCloudEnvironment(?string $cloudEnvironment): CloudEnvironment
+    {
+        if ($cloudEnvironment === null) {
+            /** @var string $cloudEnvironment */
+            $cloudEnvironment = Config::get('powerbi.cloud_environment', CloudEnvironment::Commercial->value);
+        }
+
+        return CloudEnvironment::fromString($cloudEnvironment);
     }
 
     /**
