@@ -163,31 +163,40 @@ class PowerBI
         ConnectionAccountType $type,
         array $credentials = []
     ): PowerBIConnectorBase {
-        $cloudEnvironment = isset($credentials['cloud_environment']) && is_string($credentials['cloud_environment'])
-            ? $credentials['cloud_environment']
-            : null;
-
         return match ($type) {
             ConnectionAccountType::ServicePrincipal => static::servicePrincipal(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null,
-                cloudEnvironment: $cloudEnvironment
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
             ConnectionAccountType::AdminServicePrincipal => static::adminServicePrincipal(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null,
-                cloudEnvironment: $cloudEnvironment
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
             ConnectionAccountType::AzureUser => static::azureUser(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null,
-                redirectUri: isset($credentials['redirect_uri']) && is_string($credentials['redirect_uri']) ? $credentials['redirect_uri'] : null,
-                cloudEnvironment: $cloudEnvironment
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                redirectUri: self::stringOrNull($credentials, 'redirect_uri'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
         };
+    }
+
+    /**
+     * Return the credential value for the given key if it is a string, otherwise null.
+     *
+     * @param  array<string, mixed>  $credentials  The credential overrides
+     * @param  string  $key  The credential key to extract
+     */
+    private static function stringOrNull(array $credentials, string $key): ?string
+    {
+        return isset($credentials[$key]) && is_string($credentials[$key])
+            ? $credentials[$key]
+            : null;
     }
 
     //
