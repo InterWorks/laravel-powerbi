@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
+use InterWorks\PowerBI\Enums\CloudEnvironment;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 
 test('can create PowerBIAzureUser connector', function () {
@@ -54,6 +55,83 @@ test('can generate authorization URL', function () {
     expect($authUrl)->toContain('redirect_uri=https');
     expect($authUrl)->toContain('response_type=code');
 });
+
+test('defaults to commercial cloud environment when not specified', function () {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::Commercial);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('resolves GCC base URL and commercial authorization endpoint for the GCC environment', function () {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback',
+        cloudEnvironment: 'gcc'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbigov.us/v1.0/myorg');
+
+    // GCC (moderate) authenticates against commercial Entra, not the Azure Government authority.
+    $authUrl = $connector->getAuthorizationUrl();
+    expect($authUrl)->toContain('https://login.microsoftonline.com/test-tenant/oauth2/authorize');
+});
+
+test('throws for an unknown cloud environment', function () {
+    expect(fn () => new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback',
+        cloudEnvironment: 'gcc-high'
+    ))->toThrow(InvalidArgumentException::class, 'Invalid Power BI cloud environment: gcc-high');
+});
+
+test('reads cloud environment from config when not explicitly passed', function () {
+    Config::set('powerbi.cloud_environment', 'gcc_high');
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCCHigh);
+    expect($connector->resolveBaseUrl())->toBe('https://api.high.powerbigov.us/v1.0/myorg');
+});
+
+test('resolves the token endpoint per cloud environment', function (
+    ?string $cloudEnvironment,
+    string $expectedTokenEndpoint
+) {
+    $connector = new PowerBIAzureUser(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        redirectUri: 'https://my-app.com/oauth/callback',
+        cloudEnvironment: $cloudEnvironment
+    );
+
+    // Use reflection to pin the private endpoint resolution per environment
+    $reflection = new ReflectionClass($connector);
+    $tokenEndpoint = $reflection->getMethod('getTokenEndpoint');
+    $tokenEndpoint->setAccessible(true);
+
+    expect($tokenEndpoint->invoke($connector))->toBe($expectedTokenEndpoint);
+})->with([
+    'commercial (default)' => [null, 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc' => ['gcc', 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+    'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+]);
 
 test('can retrieve state for CSRF protection', function () {
     $connector = new PowerBIAzureUser(

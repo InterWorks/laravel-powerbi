@@ -2,6 +2,28 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
+## 0.1.1 - Unreleased
+
+### Added
+
+- **Microsoft US Government sovereign cloud support** (GCC, GCC High / DoDCON, DoD). A new
+  `cloud_environment` config option (`POWER_BI_CLOUD_ENVIRONMENT`) and a `cloudEnvironment`
+  argument on every factory method and connector route the REST API, OAuth authorize/token,
+  and the Power BI resource URL to the correct sovereign endpoints. A missing or empty value
+  defaults to `commercial`, so existing usage is unaffected; any other unrecognized value
+  throws an `InvalidArgumentException` so a typo can never silently route a sovereign-cloud
+  tenant to the commercial endpoints.
+- New `InterWorks\PowerBI\Enums\CloudEnvironment` backed enum centralizing per-cloud URL
+  resolution (consistent with the existing `ConnectionAccountType` enum). GCC shares the
+  commercial Microsoft Entra authority (`login.microsoftonline.com`); GCC High and DoD use
+  the US Government authority (`login.microsoftonline.us`).
+
+### Note
+
+- The Service Principal token host moved from the legacy `login.windows.net` alias to
+  `login.microsoftonline.com` for the commercial cloud. These are functionally equivalent
+  Azure AD v1.0 endpoints.
+
 ## 0.1.0 - 2026-03-31
 
 ### Major Version update

@@ -2,7 +2,11 @@
 
 use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
+use InterWorks\PowerBI\Enums\CloudEnvironment;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\OAuth2\GetClientCredentialsTokenRequest;
 
 test('can create PowerBIServicePrincipal with Service Principal account type', function () {
     $connector = new PowerBIServicePrincipal(
@@ -50,6 +54,96 @@ test('resolves correct base URL', function () {
     expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
 });
 
+test('defaults to commercial cloud environment when not specified', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::Commercial);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
+});
+
+test('resolves GCC base URL when constructed with the GCC environment', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: 'gcc'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC);
+    expect($connector->resolveBaseUrl())->toBe('https://api.powerbigov.us/v1.0/myorg');
+});
+
+test('throws for an unknown cloud environment', function () {
+    expect(fn () => new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: 'mars-cloud'
+    ))->toThrow(InvalidArgumentException::class, 'Invalid Power BI cloud environment: mars-cloud');
+});
+
+test('reads cloud environment from config when not explicitly passed', function () {
+    Config::set('powerbi.cloud_environment', 'dod');
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret'
+    );
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::DoD);
+    expect($connector->resolveBaseUrl())->toBe('https://api.mil.powerbigov.us/v1.0/myorg');
+});
+
+test('resolves the token endpoint and resource URL per cloud environment', function (
+    ?string $cloudEnvironment,
+    string $expectedTokenEndpoint,
+    string $expectedResourceUrl
+) {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: $cloudEnvironment
+    );
+
+    // Use reflection to pin the private endpoint resolution (guards the commercial
+    // login.windows.net -> login.microsoftonline.com host change and gov routing)
+    $reflection = new ReflectionClass($connector);
+
+    $tokenEndpoint = $reflection->getMethod('getTokenEndpoint');
+    $tokenEndpoint->setAccessible(true);
+    expect($tokenEndpoint->invoke($connector))->toBe($expectedTokenEndpoint);
+
+    $resourceUrl = $reflection->getMethod('getResourceUrl');
+    $resourceUrl->setAccessible(true);
+    expect($resourceUrl->invoke($connector))->toBe($expectedResourceUrl);
+})->with([
+    'commercial (default)' => [
+        null,
+        'https://login.microsoftonline.com/test-tenant/oauth2/token',
+        'https://analysis.windows.net/powerbi/api',
+    ],
+    'gcc' => [
+        'gcc',
+        'https://login.microsoftonline.com/test-tenant/oauth2/token',
+        'https://analysis.usgovcloudapi.net/powerbi/api',
+    ],
+    'gcc_high' => [
+        'gcc_high',
+        'https://login.microsoftonline.us/test-tenant/oauth2/token',
+        'https://high.analysis.usgovcloudapi.net/powerbi/api',
+    ],
+    'dod' => [
+        'dod',
+        'https://login.microsoftonline.us/test-tenant/oauth2/token',
+        'https://mil.analysis.usgovcloudapi.net/powerbi/api',
+    ],
+]);
+
 test('uses default Service Principal account type when not specified', function () {
     $connector = new PowerBIServicePrincipal(
         tenant: 'test-tenant',
@@ -74,3 +168,37 @@ test('caching can be disabled via config', function () {
     $isCachingEnabled->setAccessible(true);
     expect($isCachingEnabled->getValue($connector))->toBeFalse();
 });
+
+test('getAccessToken sends the client credentials request to the absolute Entra token endpoint', function (?string $cloudEnvironment, string $expectedTokenUrl) {
+    // The token endpoint is an absolute Microsoft Entra URL that differs from the Power BI
+    // API base URL. Saloon v4 rejects absolute endpoint URLs (SSRF guard) unless the OAuth
+    // config opts in via setAllowBaseUrlOverride(). This regression test exercises the real
+    // send pipeline (the guard runs while building the PendingRequest, even under a mock),
+    // so it fails if that opt-in is ever dropped.
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: $cloudEnvironment,
+    );
+
+    $connector->withMockClient(new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make([
+            'access_token' => 'fake-access-token',
+            'expires_in' => 3600,
+        ]),
+    ]));
+
+    $authenticator = $connector->getAccessToken();
+
+    expect($authenticator->getAccessToken())->toBe('fake-access-token');
+
+    $connector->getMockClient()->assertSent(
+        fn ($request, $response) => $response->getPendingRequest()->getUrl() === $expectedTokenUrl
+    );
+})->with([
+    'commercial (default)' => [null, 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc' => ['gcc', 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+    'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+]);

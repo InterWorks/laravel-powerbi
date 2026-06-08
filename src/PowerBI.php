@@ -60,17 +60,20 @@ class PowerBI
      * @param  string|null  $tenant  Azure AD tenant ID (defaults to config)
      * @param  string|null  $clientId  Application client ID (defaults to config)
      * @param  string|null  $clientSecret  Application client secret (defaults to config)
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
      */
     public static function servicePrincipal(
         ?string $tenant = null,
         ?string $clientId = null,
-        ?string $clientSecret = null
+        ?string $clientSecret = null,
+        ?string $cloudEnvironment = null
     ): PowerBIServicePrincipal {
         return new PowerBIServicePrincipal(
             tenant: $tenant,
             clientId: $clientId,
             clientSecret: $clientSecret,
-            connectionAccountType: ConnectionAccountType::ServicePrincipal
+            connectionAccountType: ConnectionAccountType::ServicePrincipal,
+            cloudEnvironment: $cloudEnvironment
         );
     }
 
@@ -84,11 +87,13 @@ class PowerBI
      * @param  string|null  $tenant  Azure AD tenant ID (defaults to config)
      * @param  string|null  $clientId  Admin application client ID (defaults to config admin_client_id)
      * @param  string|null  $clientSecret  Admin application client secret (defaults to config admin_client_secret)
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
      */
     public static function adminServicePrincipal(
         ?string $tenant = null,
         ?string $clientId = null,
-        ?string $clientSecret = null
+        ?string $clientSecret = null,
+        ?string $cloudEnvironment = null
     ): PowerBIServicePrincipal {
         /** @var string $configClientId */
         $configClientId = Config::get('powerbi.admin_client_id', '');
@@ -99,7 +104,8 @@ class PowerBI
             tenant: $tenant,
             clientId: $clientId ?? $configClientId,
             clientSecret: $clientSecret ?? $configClientSecret,
-            connectionAccountType: ConnectionAccountType::AdminServicePrincipal
+            connectionAccountType: ConnectionAccountType::AdminServicePrincipal,
+            cloudEnvironment: $cloudEnvironment
         );
     }
 
@@ -115,12 +121,14 @@ class PowerBI
      * @param  string|null  $clientId  Application client ID (defaults to config client_id)
      * @param  string|null  $clientSecret  Application client secret (defaults to config client_secret)
      * @param  string|null  $redirectUri  OAuth callback URI (defaults to config redirect_uri)
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
      */
     public static function azureUser(
         ?string $tenant = null,
         ?string $clientId = null,
         ?string $clientSecret = null,
-        ?string $redirectUri = null
+        ?string $redirectUri = null,
+        ?string $cloudEnvironment = null
     ): PowerBIAzureUser {
         /** @var string $configTenant */
         $configTenant = Config::get('powerbi.tenant', '');
@@ -135,7 +143,8 @@ class PowerBI
             tenant: $tenant ?? $configTenant,
             clientId: $clientId ?? $configClientId,
             clientSecret: $clientSecret ?? $configClientSecret,
-            redirectUri: $redirectUri ?? $configRedirectUri
+            redirectUri: $redirectUri ?? $configRedirectUri,
+            cloudEnvironment: $cloudEnvironment
         );
     }
 
@@ -156,22 +165,38 @@ class PowerBI
     ): PowerBIConnectorBase {
         return match ($type) {
             ConnectionAccountType::ServicePrincipal => static::servicePrincipal(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
             ConnectionAccountType::AdminServicePrincipal => static::adminServicePrincipal(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
             ConnectionAccountType::AzureUser => static::azureUser(
-                tenant: isset($credentials['tenant']) && is_string($credentials['tenant']) ? $credentials['tenant'] : null,
-                clientId: isset($credentials['client_id']) && is_string($credentials['client_id']) ? $credentials['client_id'] : null,
-                clientSecret: isset($credentials['client_secret']) && is_string($credentials['client_secret']) ? $credentials['client_secret'] : null,
-                redirectUri: isset($credentials['redirect_uri']) && is_string($credentials['redirect_uri']) ? $credentials['redirect_uri'] : null
+                tenant: self::stringOrNull($credentials, 'tenant'),
+                clientId: self::stringOrNull($credentials, 'client_id'),
+                clientSecret: self::stringOrNull($credentials, 'client_secret'),
+                redirectUri: self::stringOrNull($credentials, 'redirect_uri'),
+                cloudEnvironment: self::stringOrNull($credentials, 'cloud_environment')
             ),
         };
+    }
+
+    /**
+     * Return the credential value for the given key if it is a string, otherwise null.
+     *
+     * @param  array<string, mixed>  $credentials  The credential overrides
+     * @param  string  $key  The credential key to extract
+     */
+    private static function stringOrNull(array $credentials, string $key): ?string
+    {
+        return isset($credentials[$key]) && is_string($credentials[$key])
+            ? $credentials[$key]
+            : null;
     }
 
     //
