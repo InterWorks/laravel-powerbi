@@ -83,7 +83,12 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
             ->setClientSecret($this->clientSecret)
             ->setRedirectUri($this->redirectUri)
             ->setAuthorizeEndpoint($this->getAuthorizationEndpoint())
-            ->setTokenEndpoint($this->getTokenEndpoint());
+            ->setTokenEndpoint($this->getTokenEndpoint())
+            // The authorize/token endpoints are absolute Microsoft Entra URLs
+            // (login.microsoftonline.com / .us) that intentionally differ from the
+            // Power BI API base URL. They are package-defined, not user input, so
+            // Saloon v4's SSRF guard against absolute endpoint URLs is safe to relax here.
+            ->setAllowBaseUrlOverride();
     }
 
     /**

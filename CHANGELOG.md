@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
-## 0.0.4 - 2026-06-04
+## 0.1.1 - Unreleased
 
 ### Added
 
@@ -14,16 +14,15 @@ All notable changes to `laravel-powerbi` will be documented in this file.
   throws an `InvalidArgumentException` so a typo can never silently route a sovereign-cloud
   tenant to the commercial endpoints.
 - New `InterWorks\PowerBI\Enums\CloudEnvironment` backed enum centralizing per-cloud URL
-  resolution (consistent with the existing `ConnectionAccountType` enum).
+  resolution (consistent with the existing `ConnectionAccountType` enum). GCC shares the
+  commercial Microsoft Entra authority (`login.microsoftonline.com`); GCC High and DoD use
+  the US Government authority (`login.microsoftonline.us`).
 
 ### Note
 
 - The Service Principal token host moved from the legacy `login.windows.net` alias to
   `login.microsoftonline.com` for the commercial cloud. These are functionally equivalent
   Azure AD v1.0 endpoints.
-
-This release targets the Saloon v3 / Laravel 9+ line (the `0.0.x` series). The same feature
-will be forward-ported to the Saloon v4 `main` line separately.
 
 ## 0.1.0 - 2026-03-31
 

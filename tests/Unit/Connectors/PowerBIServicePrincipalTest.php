@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Config;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\Enums\CloudEnvironment;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\OAuth2\GetClientCredentialsTokenRequest;
 
 test('can create PowerBIServicePrincipal with Service Principal account type', function () {
     $connector = new PowerBIServicePrincipal(
@@ -165,3 +168,37 @@ test('caching can be disabled via config', function () {
     $isCachingEnabled->setAccessible(true);
     expect($isCachingEnabled->getValue($connector))->toBeFalse();
 });
+
+test('getAccessToken sends the client credentials request to the absolute Entra token endpoint', function (?string $cloudEnvironment, string $expectedTokenUrl) {
+    // The token endpoint is an absolute Microsoft Entra URL that differs from the Power BI
+    // API base URL. Saloon v4 rejects absolute endpoint URLs (SSRF guard) unless the OAuth
+    // config opts in via setAllowBaseUrlOverride(). This regression test exercises the real
+    // send pipeline (the guard runs while building the PendingRequest, even under a mock),
+    // so it fails if that opt-in is ever dropped.
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        cloudEnvironment: $cloudEnvironment,
+    );
+
+    $connector->withMockClient(new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make([
+            'access_token' => 'fake-access-token',
+            'expires_in' => 3600,
+        ]),
+    ]));
+
+    $authenticator = $connector->getAccessToken();
+
+    expect($authenticator->getAccessToken())->toBe('fake-access-token');
+
+    $connector->getMockClient()->assertSent(
+        fn ($request, $response) => $response->getPendingRequest()->getUrl() === $expectedTokenUrl
+    );
+})->with([
+    'commercial (default)' => [null, 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc' => ['gcc', 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
+    'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+    'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+]);

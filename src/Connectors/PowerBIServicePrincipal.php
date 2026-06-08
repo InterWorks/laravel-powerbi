@@ -98,6 +98,11 @@ class PowerBIServicePrincipal extends PowerBIConnectorBase implements Cacheable
             ->setClientId($this->clientId)
             ->setClientSecret($this->clientSecret)
             ->setTokenEndpoint($this->getTokenEndpoint())
+            // The token endpoint is an absolute Microsoft Entra URL
+            // (login.microsoftonline.com / .us) that intentionally differs from the
+            // Power BI API base URL. It is package-defined, not user input, so
+            // Saloon v4's SSRF guard against absolute endpoint URLs is safe to relax here.
+            ->setAllowBaseUrlOverride()
             ->setRequestModifier(function (Request $request) {
                 /** @var GetClientCredentialsTokenRequest $request */
                 // Add the Power BI resource to the request body (required for Azure AD v1.0)
