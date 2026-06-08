@@ -39,17 +39,22 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
      * @param  string  $clientId  The application (client) ID
      * @param  string  $clientSecret  The application client secret
      * @param  string  $redirectUri  The OAuth callback/redirect URI
+     * @param  string|null  $cloudEnvironment  Microsoft cloud environment (defaults to config, then commercial)
+     *
+     * @throws \InvalidArgumentException When an invalid cloud environment is provided
      */
     public function __construct(
         string $tenant,
         string $clientId,
         string $clientSecret,
         string $redirectUri,
+        ?string $cloudEnvironment = null,
     ) {
         $this->tenant = $tenant;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->redirectUri = $redirectUri;
+        $this->cloudEnvironment = $this->resolveCloudEnvironment($cloudEnvironment);
 
         // Configure caching based on package configuration
         $this->configureCaching();
@@ -78,22 +83,27 @@ class PowerBIAzureUser extends PowerBIConnectorBase implements Cacheable
             ->setClientSecret($this->clientSecret)
             ->setRedirectUri($this->redirectUri)
             ->setAuthorizeEndpoint($this->getAuthorizationEndpoint())
-            ->setTokenEndpoint($this->getTokenEndpoint());
+            ->setTokenEndpoint($this->getTokenEndpoint())
+            // The authorize/token endpoints are absolute Microsoft Entra URLs
+            // (login.microsoftonline.com / .us) that intentionally differ from the
+            // Power BI API base URL. They are package-defined, not user input, so
+            // Saloon v4's SSRF guard against absolute endpoint URLs is safe to relax here.
+            ->setAllowBaseUrlOverride();
     }
 
     /**
-     * Returns the Azure AD v2.0 authorization endpoint.
+     * Returns the authorization endpoint for the connector's cloud environment.
      */
     private function getAuthorizationEndpoint(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenant}/oauth2/authorize";
+        return $this->cloudEnvironment->authorizeEndpoint($this->tenant);
     }
 
     /**
-     * Returns the Azure AD v2.0 token endpoint.
+     * Returns the token endpoint for the connector's cloud environment.
      */
     private function getTokenEndpoint(): string
     {
-        return "https://login.microsoftonline.com/{$this->tenant}/oauth2/token";
+        return $this->cloudEnvironment->tokenEndpoint($this->tenant);
     }
 }

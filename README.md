@@ -35,11 +35,15 @@ Publish the configuration file:
 php artisan vendor:publish --tag="laravel-powerbi-config"
 ```
 
-Add your Power BI credentials to your `.env` file:f
+Add your Power BI credentials to your `.env` file:
 
 ```env
 # Azure AD Configuration
 POWER_BI_TENANT=your-tenant-id
+
+# Cloud Environment (Optional)
+# One of: commercial (default), gcc, gcc_high, dod
+POWER_BI_CLOUD_ENVIRONMENT=commercial
 
 # Service Principal (Client Credentials)
 POWER_BI_CLIENT_ID=your-client-id
@@ -56,6 +60,42 @@ POWER_BI_REDIRECT_URI=https://your-app.com/auth/powerbi/callback
 POWER_BI_CACHE_ENABLED=true
 POWER_BI_CACHE_EXPIRY_SECONDS=3600
 ```
+
+### US Government Sovereign Clouds (GCC, GCC High, DoD)
+
+Power BI tenants on Microsoft US Government licenses use different REST API and authentication
+endpoints than the commercial cloud. Set `POWER_BI_CLOUD_ENVIRONMENT` (or pass `cloudEnvironment`
+to any factory method / connector) to route requests to the correct endpoints:
+
+| Environment | Power BI API base | Entra authority | Resource URL |
+|---|---|---|---|
+| `commercial` | `api.powerbi.com` | `login.microsoftonline.com` | `analysis.windows.net/powerbi/api` |
+| `gcc` | `api.powerbigov.us` | `login.microsoftonline.com` | `analysis.usgovcloudapi.net/powerbi/api` |
+| `gcc_high` | `api.high.powerbigov.us` | `login.microsoftonline.us` | `high.analysis.usgovcloudapi.net/powerbi/api` |
+| `dod` | `api.mil.powerbigov.us` | `login.microsoftonline.us` | `mil.analysis.usgovcloudapi.net/powerbi/api` |
+
+> **GCC authority:** GCC (moderate) identities live in commercial Microsoft Entra, so `gcc`
+> authenticates against `login.microsoftonline.com` (same as commercial) while still using the
+> `powerbigov.us` API host and `usgovcloudapi.net` resource. Only GCC High and DoD use the Azure
+> Government authority `login.microsoftonline.us`.
+
+```php
+// Explicit per-connector override
+$connector = PowerBI::servicePrincipal(
+    tenant: 'your-tenant-id',
+    clientId: 'your-client-id',
+    clientSecret: 'your-client-secret',
+    cloudEnvironment: 'gcc'
+);
+```
+
+A missing or empty value defaults to `commercial`. Any other unrecognized value (e.g. a typo like
+`gcc-high`) throws an `InvalidArgumentException` when the connector is created, so a sovereign-cloud
+tenant can never be silently routed to the commercial endpoints.
+
+> **Note:** When using the Azure User flow with explicit OAuth scopes, make sure your scope strings
+> reference the resource URL for your cloud environment (see the table above) rather than the
+> commercial `analysis.windows.net/powerbi/api` resource.
 
 ## Quick Start
 

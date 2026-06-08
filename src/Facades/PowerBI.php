@@ -18,9 +18,9 @@ use Saloon\Http\Request;
 /**
  * PowerBI Facade
  *
- * @method static PowerBIServicePrincipal servicePrincipal(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null) Create a Service Principal connector
- * @method static PowerBIServicePrincipal adminServicePrincipal(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null) Create an Admin Service Principal connector
- * @method static PowerBIAzureUser azureUser(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null, ?string $redirectUri = null) Create an Azure User connector
+ * @method static PowerBIServicePrincipal servicePrincipal(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null, ?string $cloudEnvironment = null) Create a Service Principal connector
+ * @method static PowerBIServicePrincipal adminServicePrincipal(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null, ?string $cloudEnvironment = null) Create an Admin Service Principal connector
+ * @method static PowerBIAzureUser azureUser(?string $tenant = null, ?string $clientId = null, ?string $clientSecret = null, ?string $redirectUri = null, ?string $cloudEnvironment = null) Create an Azure User connector
  * @method static PowerBIConnectorBase create(ConnectionAccountType $type, array<string, mixed> $credentials = []) Create a connector by account type
  * @method static PowerBIConnectorBase connector() Get the current singleton connector instance
  * @method static void setConnector(PowerBIConnectorBase $connector) Set the singleton connector instance

@@ -52,26 +52,30 @@ composer prepare
 The package uses a hierarchical connector architecture to support multiple OAuth2 flows:
 
 **Base Connector**:
-- **`PowerBIConnectorBase`** (`src/PowerBIConnectorBase.php`): Abstract base class that provides:
-  - Base URL resolution (`https://api.powerbi.com/v1.0/myorg`)
+- **`PowerBIConnectorBase`** (`src/Classes/PowerBIConnectorBase.php`): Abstract base class that provides:
+  - Base URL resolution per cloud environment (commercial default: `https://api.powerbi.com/v1.0/myorg`)
+  - Cloud environment resolution via `resolveCloudEnvironment()` (explicit override → config → commercial)
   - Request sending with automatic account type restriction enforcement
   - Custom exception handling (admin endpoints, access denied, etc.)
   - Common functionality shared by all connector types
+
+**Cloud Environments**:
+- **`CloudEnvironment`** (`src/Enums/CloudEnvironment.php`): Backed string enum (`commercial`, `gcc`, `gcc_high`, `dod`) centralizing per-cloud URL resolution — REST API base URL, Entra authority, OAuth authorize/token endpoints, and the Power BI resource URL. Configure via `cloud_environment` config / `POWER_BI_CLOUD_ENVIRONMENT` env var, or pass `cloudEnvironment` to any factory method or connector. A missing/empty value defaults to commercial; any other unrecognized value throws `InvalidArgumentException` at connector construction.
 
 **Concrete Connectors**:
 - **`PowerBIServicePrincipal`** (`src/Connectors/PowerBIServicePrincipal.php`):
   - Uses `ClientCredentialsGrant` trait from Saloon
   - Supports `ServicePrincipal` and `AdminServicePrincipal` account types
   - Azure AD v1.0 endpoints with `resource` parameter
-  - Token endpoint: `https://login.windows.net/{tenant}/oauth2/token`
+  - Token endpoint (commercial): `https://login.microsoftonline.com/{tenant}/oauth2/token` (sovereign clouds use `login.microsoftonline.us`)
   - Server-to-server authentication without user interaction
 
 - **`PowerBIAzureUser`** (`src/Connectors/PowerBIAzureUser.php`):
   - Uses `AuthorizationCodeGrant` trait from Saloon
   - Supports `AzureUser` account type only
   - Azure AD v1.0 endpoints
-  - Authorization endpoint: `https://login.microsoftonline.com/{tenant}/oauth2/authorize`
-  - Token endpoint: `https://login.microsoftonline.com/{tenant}/oauth2/token`
+  - Authorization endpoint (commercial): `https://login.microsoftonline.com/{tenant}/oauth2/authorize`
+  - Token endpoint (commercial): `https://login.microsoftonline.com/{tenant}/oauth2/token`
   - User-delegated authentication with browser redirect
   - Supports access token refresh via refresh tokens
 
@@ -113,14 +117,17 @@ PowerBI connector → GetGroups request → Groups DTO → Collection<Group>
 
 The package supports two OAuth2 authentication flows:
 
+Endpoints below are for the commercial cloud; sovereign clouds (GCC, GCC High, DoD) resolve different hosts via the `CloudEnvironment` enum. Set `POWER_BI_CLOUD_ENVIRONMENT` (`commercial` (default), `gcc`, `gcc_high`, or `dod`) to select the cloud.
+
 **1. Client Credentials Grant (Service Principal)**:
 - Used for server-to-server authentication
 - No user interaction required
 - Azure AD v1.0 endpoints
-- Token endpoint: `https://login.windows.net/{tenant}/oauth2/token`
+- Token endpoint: `https://login.microsoftonline.com/{tenant}/oauth2/token`
 - Resource parameter: `https://analysis.windows.net/powerbi/api`
 - Environment variables:
   - `POWER_BI_TENANT` - Azure AD tenant ID
+  - `POWER_BI_CLOUD_ENVIRONMENT` - Microsoft cloud environment (optional, defaults to `commercial`)
   - `POWER_BI_CLIENT_ID` - Standard service principal credentials
   - `POWER_BI_CLIENT_SECRET` - Standard service principal credentials
   - `POWER_BI_ADMIN_CLIENT_ID` - Admin service principal credentials (for admin endpoints)
