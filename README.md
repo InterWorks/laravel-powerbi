@@ -70,9 +70,14 @@ to any factory method / connector) to route requests to the correct endpoints:
 | Environment | Power BI API base | Entra authority | Resource URL |
 |---|---|---|---|
 | `commercial` | `api.powerbi.com` | `login.microsoftonline.com` | `analysis.windows.net/powerbi/api` |
-| `gcc` | `api.powerbigov.us` | `login.microsoftonline.us` | `analysis.usgovcloudapi.net/powerbi/api` |
+| `gcc` | `api.powerbigov.us` | `login.microsoftonline.com` | `analysis.usgovcloudapi.net/powerbi/api` |
 | `gcc_high` | `api.high.powerbigov.us` | `login.microsoftonline.us` | `high.analysis.usgovcloudapi.net/powerbi/api` |
 | `dod` | `api.mil.powerbigov.us` | `login.microsoftonline.us` | `mil.analysis.usgovcloudapi.net/powerbi/api` |
+
+> **GCC authority:** GCC (moderate) identities live in commercial Microsoft Entra, so `gcc`
+> authenticates against `login.microsoftonline.com` (same as commercial) while still using the
+> `powerbigov.us` API host and `usgovcloudapi.net` resource. Only GCC High and DoD use the Azure
+> Government authority `login.microsoftonline.us`.
 
 ```php
 // Explicit per-connector override

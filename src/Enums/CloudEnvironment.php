@@ -103,14 +103,15 @@ enum CloudEnvironment: string
     /**
      * Returns the Microsoft Entra authority base URL for this cloud environment.
      *
-     * Commercial uses login.microsoftonline.com; all US Government clouds share the
-     * login.microsoftonline.us authority.
+     * GCC (moderate) identities live in commercial Microsoft Entra, so it authenticates
+     * against login.microsoftonline.com — the same authority as Commercial. Only GCC High
+     * and DoD use the Azure Government authority, login.microsoftonline.us.
      */
     private function authority(): string
     {
         return match ($this) {
-            self::Commercial => 'https://login.microsoftonline.com',
-            self::GCC, self::GCCHigh, self::DoD => 'https://login.microsoftonline.us',
+            self::Commercial, self::GCC => 'https://login.microsoftonline.com',
+            self::GCCHigh, self::DoD => 'https://login.microsoftonline.us',
         };
     }
 }
