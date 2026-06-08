@@ -68,7 +68,7 @@ test('defaults to commercial cloud environment when not specified', function () 
     expect($connector->resolveBaseUrl())->toBe('https://api.powerbi.com/v1.0/myorg');
 });
 
-test('resolves GCC base URL and gov authorization endpoint for the GCC environment', function () {
+test('resolves GCC base URL and commercial authorization endpoint for the GCC environment', function () {
     $connector = new PowerBIAzureUser(
         tenant: 'test-tenant',
         clientId: 'test-client-id',
@@ -80,8 +80,9 @@ test('resolves GCC base URL and gov authorization endpoint for the GCC environme
     expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC);
     expect($connector->resolveBaseUrl())->toBe('https://api.powerbigov.us/v1.0/myorg');
 
+    // GCC (moderate) authenticates against commercial Entra, not the Azure Government authority.
     $authUrl = $connector->getAuthorizationUrl();
-    expect($authUrl)->toContain('https://login.microsoftonline.us/test-tenant/oauth2/authorize');
+    expect($authUrl)->toContain('https://login.microsoftonline.com/test-tenant/oauth2/authorize');
 });
 
 test('throws for an unknown cloud environment', function () {
@@ -127,7 +128,7 @@ test('resolves the token endpoint per cloud environment', function (
     expect($tokenEndpoint->invoke($connector))->toBe($expectedTokenEndpoint);
 })->with([
     'commercial (default)' => [null, 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
-    'gcc' => ['gcc', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
+    'gcc' => ['gcc', 'https://login.microsoftonline.com/test-tenant/oauth2/token'],
     'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
     'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
 ]);

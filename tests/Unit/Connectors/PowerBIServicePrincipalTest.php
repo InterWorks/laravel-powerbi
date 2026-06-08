@@ -126,7 +126,7 @@ test('resolves the token endpoint and resource URL per cloud environment', funct
     ],
     'gcc' => [
         'gcc',
-        'https://login.microsoftonline.us/test-tenant/oauth2/token',
+        'https://login.microsoftonline.com/test-tenant/oauth2/token',
         'https://analysis.usgovcloudapi.net/powerbi/api',
     ],
     'gcc_high' => [

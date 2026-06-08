@@ -12,7 +12,7 @@ dataset('cloud environments', [
     'gcc' => [
         CloudEnvironment::GCC,
         'https://api.powerbigov.us/v1.0/myorg',
-        'https://login.microsoftonline.us',
+        'https://login.microsoftonline.com',
         'https://analysis.usgovcloudapi.net/powerbi/api',
     ],
     'gcc_high' => [
