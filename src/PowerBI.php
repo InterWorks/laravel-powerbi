@@ -13,6 +13,8 @@ use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\DTO\Reports;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
+use InterWorks\PowerBI\DTO\ActivityEventsResponse;
+use InterWorks\PowerBI\Requests\Admin\Activity\GetActivityEvents;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardInGroup;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardsInGroup;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
@@ -354,6 +356,33 @@ class PowerBI
     }
 
     //
+    // Admin: Activity Events
+    //
+
+    /**
+     * Get activity events for a tenant within a 1-hour window.
+     *
+     * For a full day, call 24 times (one per hour). Use getAllPages() on the
+     * returned request directly when you need to follow continuation tokens.
+     *
+     * @param  string  $startDateTime  Window start e.g. '2024-01-01T00:00:00'
+     * @param  string  $endDateTime    Window end e.g. '2024-01-01T00:59:59' (max 1 hour)
+     * @param  string|null  $filter    OData filter e.g. "Activity eq 'ViewReport'"
+     */
+    public static function getActivityEvents(
+        string $startDateTime,
+        string $endDateTime,
+        ?string $filter = null,
+    ): ActivityEventsResponse {
+        /** @var ActivityEventsResponse */
+        return static::send(new GetActivityEvents(
+            startDateTime: $startDateTime,
+            endDateTime: $endDateTime,
+            filter: $filter,
+        ));
+    }
+
+    //
     // Low-Level Request Sending
     //
 
@@ -420,6 +449,7 @@ class PowerBI
             "InterWorks\\PowerBI\\Requests\\Dashboards\\{$className}",
             "InterWorks\\PowerBI\\Requests\\EmbedToken\\{$className}",
             "InterWorks\\PowerBI\\Requests\\Admin\\Groups\\{$className}",
+            "InterWorks\\PowerBI\\Requests\\Admin\\Activity\\{$className}",
         ];
 
         foreach ($namespaces as $fqcn) {
