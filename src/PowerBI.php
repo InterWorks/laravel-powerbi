@@ -11,8 +11,13 @@ use InterWorks\PowerBI\DTO\Dashboards;
 use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\DTO\Reports;
+use InterWorks\PowerBI\DTO\ScanRequest;
+use InterWorks\PowerBI\DTO\ScanResult;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
+use InterWorks\PowerBI\Requests\Admin\Workspaces\GetScanResult;
+use InterWorks\PowerBI\Requests\Admin\Workspaces\GetScanStatus;
+use InterWorks\PowerBI\Requests\Admin\Workspaces\PostWorkspaceInfo;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardInGroup;
 use InterWorks\PowerBI\Requests\Dashboards\GetDashboardsInGroup;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
@@ -353,6 +358,52 @@ class PowerBI
         return static::send(new GetDashboardInGroup($groupId, $dashboardId));
     }
 
+    /**
+     * Initiate a workspace metadata scan (Scanner API).
+     *
+     * Requires the admin Service Principal connector (see adminServicePrincipal())
+     * and the tenant setting "Allow service principals to use read-only admin APIs".
+     * Use the returned scan ID with getScanStatus() and getScanResult().
+     *
+     * @param  array<int, string>  $workspaceIds  Workspace IDs to scan (1 to 100)
+     * @param  bool  $datasetSchema  Return dataset schema (tables, columns, measures)
+     * @param  bool  $datasetExpressions  Return dataset DAX/Mashup expressions
+     */
+    public static function postWorkspaceInfo(
+        array $workspaceIds,
+        bool $datasetSchema = true,
+        bool $datasetExpressions = false,
+    ): ScanRequest {
+        /** @var ScanRequest */
+        return static::send(new PostWorkspaceInfo(
+            workspaceIds: $workspaceIds,
+            datasetSchema: $datasetSchema,
+            datasetExpressions: $datasetExpressions,
+        ));
+    }
+
+    /**
+     * Get the status of a workspace metadata scan.
+     *
+     * @param  string  $scanId  The scan request ID from postWorkspaceInfo()
+     */
+    public static function getScanStatus(string $scanId): ScanRequest
+    {
+        /** @var ScanRequest */
+        return static::send(new GetScanStatus($scanId));
+    }
+
+    /**
+     * Get the result of a completed workspace metadata scan.
+     *
+     * @param  string  $scanId  The scan request ID from postWorkspaceInfo()
+     */
+    public static function getScanResult(string $scanId): ScanResult
+    {
+        /** @var ScanResult */
+        return static::send(new GetScanResult($scanId));
+    }
+
     //
     // Low-Level Request Sending
     //
@@ -420,6 +471,7 @@ class PowerBI
             "InterWorks\\PowerBI\\Requests\\Dashboards\\{$className}",
             "InterWorks\\PowerBI\\Requests\\EmbedToken\\{$className}",
             "InterWorks\\PowerBI\\Requests\\Admin\\Groups\\{$className}",
+            "InterWorks\\PowerBI\\Requests\\Admin\\Workspaces\\{$className}",
         ];
 
         foreach ($namespaces as $fqcn) {

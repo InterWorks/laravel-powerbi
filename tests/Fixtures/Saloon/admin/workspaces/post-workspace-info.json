@@ -1,0 +1,16 @@
+{
+    "statusCode": 202,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Date": "Mon, 18 Nov 2025 00:20:56 GMT"
+    },
+    "data": {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "status": "NotStarted",
+        "createdDateTime": "2025-11-18T00:20:56Z"
+    },
+    "context": []
+}
