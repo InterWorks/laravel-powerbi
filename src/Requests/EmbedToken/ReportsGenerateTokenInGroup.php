@@ -20,11 +20,14 @@ class ReportsGenerateTokenInGroup extends Request implements HasBody
 
     /**
      * Create a new request instance.
+     *
+     * @param  array<int, array{username: string, roles: array<int, string>, datasets: array<int, string>}>  $identities
      */
     public function __construct(
         protected readonly string $groupId,
         protected readonly string $reportId,
         protected readonly string $accessLevel = 'View',
+        protected readonly array $identities = [],
     ) {}
 
     /**
@@ -36,15 +39,17 @@ class ReportsGenerateTokenInGroup extends Request implements HasBody
     }
 
     /**
-     * @return array{
-     *     accessLevel: string
-     * }
+     * @return array{accessLevel: string, identities?: array<int, array{username: string, roles: array<int, string>, datasets: array<int, string>}>}
      */
     protected function defaultBody(): array
     {
-        return [
-            'accessLevel' => $this->accessLevel,
-        ];
+        $body = ['accessLevel' => $this->accessLevel];
+
+        if ($this->identities !== []) {
+            $body['identities'] = $this->identities;
+        }
+
+        return $body;
     }
 
     public function createDtoFromResponse(Response $response): mixed
