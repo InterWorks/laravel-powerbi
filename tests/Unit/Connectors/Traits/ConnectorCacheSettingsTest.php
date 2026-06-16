@@ -71,8 +71,14 @@ test('throws exception when cache expiry is negative', function () {
     $connector->cacheExpiryInSeconds();
 })->throws(InvalidArgumentException::class, 'must be an integer >= 1');
 
-test('throws exception when cache expiry is string', function () {
+test('accepts numeric string cache expiry from env()', function () {
     Config::set('powerbi.cache.expiry_seconds', '3600');
+    $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret');
+    expect($connector->cacheExpiryInSeconds())->toBe(3600);
+});
+
+test('throws exception when cache expiry is a non-numeric string', function () {
+    Config::set('powerbi.cache.expiry_seconds', 'one-hour');
     $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret');
     $connector->cacheExpiryInSeconds();
 })->throws(InvalidArgumentException::class, 'must be an integer >= 1');

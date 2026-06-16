@@ -45,6 +45,11 @@ trait ConnectorCacheSettings
             );
         }
 
+        // Cast numeric strings to int (env() always returns strings)
+        if (is_string($expiry) && ctype_digit($expiry)) {
+            $expiry = (int) $expiry;
+        }
+
         // Validate is integer and >= 1
         if (! is_int($expiry) || $expiry < 1) {
             $type = get_debug_type($expiry);
