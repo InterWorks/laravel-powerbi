@@ -1,0 +1,48 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Date": "Mon, 18 Nov 2025 00:21:45 GMT"
+    },
+    "data": {
+        "workspaces": [
+            {
+                "id": "8f804a70-791e-3abf-ac10-75634bf1053f",
+                "name": "Sales Analytics",
+                "type": "Workspace",
+                "state": "Active",
+                "datasets": [
+                    {
+                        "id": "d1e2f3a4-b5c6-7890-abcd-ef1234567890",
+                        "name": "Sales Dataset",
+                        "configuredBy": "analyst@example.com",
+                        "roles": [
+                            {
+                                "name": "SalesRegion",
+                                "modelPermission": "Read",
+                                "members": [],
+                                "tablePermissions": [
+                                    {
+                                        "name": "Sales",
+                                        "filterExpression": "[Region] = USERPRINCIPALNAME()"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "46833682-447f-3f27-a004-77cd655b4188",
+                "name": "Finance Workspace",
+                "type": "Workspace",
+                "state": "Active",
+                "datasets": []
+            }
+        ]
+    },
+    "context": []
+}
