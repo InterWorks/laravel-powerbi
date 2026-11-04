@@ -223,3 +223,50 @@ test('sends the X-Start-Time header as a string that PSR-7 accepts', function ()
         return ctype_digit($startTime);
     });
 });
+
+test('AzureUser account type error points to the PowerBIAzureUser connector', function () {
+    expect(fn () => new PowerBIServicePrincipal(connectionAccountType: ConnectionAccountType::AzureUser))
+        ->toThrow(
+            InvalidArgumentException::class,
+            'PowerBIServicePrincipal connector cannot be used with AzureUser account type. '
+                .'Use PowerBIAzureUser connector instead.'
+        );
+});
+
+test('falls back to empty credentials when the config keys are missing', function () {
+    Config::set('powerbi', []);
+
+    $oauthConfig = (new PowerBIServicePrincipal)->oauthConfig();
+
+    expect($oauthConfig->getClientId())->toBe('')
+        ->and($oauthConfig->getClientSecret())->toBe('')
+        ->and($oauthConfig->getTokenEndpoint())->toBe(CloudEnvironment::Commercial->tokenEndpoint(''));
+});
+
+test('caching follows the cache.enabled config and defaults to on', function (array $cacheConfig, bool $expected) {
+    Config::set('powerbi.cache', $cacheConfig);
+
+    $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret');
+
+    expect((new ReflectionProperty($connector, 'cachingEnabled'))->getValue($connector))->toBe($expected);
+})->with([
+    'enabled' => [['enabled' => true], true],
+    'disabled' => [['enabled' => false], false],
+    'key missing' => [[], true],
+]);
+
+test('token request sends the Power BI resource for the connector cloud', function (string $cloud) {
+    $mockClient = new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make([
+            'access_token' => 'token',
+            'expires_in' => 3600,
+        ]),
+    ]);
+
+    $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret', cloudEnvironment: $cloud);
+    $connector->withMockClient($mockClient);
+    $connector->getAccessToken();
+
+    expect($mockClient->getLastPendingRequest()->body()->get('resource'))
+        ->toBe(CloudEnvironment::from($cloud)->resourceUrl());
+})->with(['commercial', 'gcc', 'gcc_high', 'dod']);
