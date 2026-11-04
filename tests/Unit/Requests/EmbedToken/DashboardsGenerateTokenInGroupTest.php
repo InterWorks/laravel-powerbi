@@ -37,3 +37,15 @@ test('can get an embed token for a dashboard from a specified group', function (
     expect($embedToken->expiration->lessThanOrEqualTo($oneHourFromNow))->toBeTrue();
     expect($embedToken->expiration->greaterThan(Carbon::now()->addMinutes(55)))->toBeTrue();
 });
+
+test('sends the View access level by default', function () {
+    $request = new DashboardsGenerateTokenInGroup('group-id', 'dashboard-id');
+
+    expect($request->body()->all())->toBe(['accessLevel' => 'View']);
+});
+
+test('sends the requested access level', function () {
+    $request = new DashboardsGenerateTokenInGroup('group-id', 'dashboard-id', 'Edit');
+
+    expect($request->body()->all())->toBe(['accessLevel' => 'Edit']);
+});

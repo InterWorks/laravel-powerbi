@@ -1,8 +1,8 @@
 # Laravel Power BI
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/interworks/laravel-powerbi.svg?style=flat-square)](https://packagist.org/packages/interworks/laravel-powerbi)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/interworks/laravel-powerbi/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/interworks/laravel-powerbi/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/interworks/laravel-powerbi/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/interworks/laravel-powerbi/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/interworks/laravel-powerbi/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/interworks/laravel-powerbi/actions/workflows/tests.yml?query=branch%3Amain)
+[![GitHub Lint Action Status](https://img.shields.io/github/actions/workflow/status/interworks/laravel-powerbi/lint.yml?branch=main&label=lint&style=flat-square)](https://github.com/interworks/laravel-powerbi/actions/workflows/lint.yml?query=branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/interworks/laravel-powerbi.svg?style=flat-square)](https://packagist.org/packages/interworks/laravel-powerbi)
 
 A comprehensive Laravel package for interacting with the Microsoft Power BI REST API. Built on [Saloon v4](https://docs.saloon.dev/) with type-safe responses, automatic caching, and multiple OAuth2 authentication flows.
@@ -32,7 +32,7 @@ composer require interworks/laravel-powerbi
 Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag="laravel-powerbi-config"
+php artisan vendor:publish --tag="powerbi-config"
 ```
 
 Add your Power BI credentials to your `.env` file:
@@ -126,6 +126,7 @@ $embedToken = PowerBI::send(new ReportsGenerateTokenInGroup(
 The package supports three authentication flows:
 
 ### Service Principal (Client Credentials)
+
 Best for backend automation and server-to-server communication.
 
 ```php
@@ -136,6 +137,7 @@ PowerBI::authenticate($token);
 **Restriction**: Cannot access individual resource endpoints (`/reports/{id}`). Use group-scoped endpoints.
 
 ### Admin Service Principal
+
 For tenant-wide administration with elevated permissions.
 
 ```php
@@ -144,6 +146,7 @@ PowerBI::setConnector($adminConnector);
 ```
 
 ### Azure User (Authorization Code)
+
 For user-delegated permissions with browser-based consent.
 
 ```php

@@ -18,3 +18,9 @@
 /UPGRADING.md       export-ignore
 /phpstan.neon.dist  export-ignore
 /phpstan-baseline.neon  export-ignore
+/.env.testing       export-ignore
+/.markdownlint-cli2.jsonc  export-ignore
+/CLAUDE.md          export-ignore
+/REVIEW.md          export-ignore
+/phpcs.xml.dist     export-ignore
+/phpstan.neon       export-ignore

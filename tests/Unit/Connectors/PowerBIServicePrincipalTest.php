@@ -202,3 +202,71 @@ test('getAccessToken sends the client credentials request to the absolute Entra 
     'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
     'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
 ]);
+
+test('sends the X-Start-Time header as a string that PSR-7 accepts', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        connectionAccountType: ConnectionAccountType::ServicePrincipal
+    );
+
+    $connector->withMockClient(new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make(['access_token' => 'fake-access-token', 'expires_in' => 3600]),
+    ]));
+
+    $connector->getAccessToken();
+
+    $connector->getMockClient()->assertSent(function ($request, $response) {
+        $startTime = $response->getPendingRequest()->createPsrRequest()->getHeaderLine('X-Start-Time');
+
+        return ctype_digit($startTime);
+    });
+});
+
+test('AzureUser account type error points to the PowerBIAzureUser connector', function () {
+    expect(fn () => new PowerBIServicePrincipal(connectionAccountType: ConnectionAccountType::AzureUser))
+        ->toThrow(
+            InvalidArgumentException::class,
+            'PowerBIServicePrincipal connector cannot be used with AzureUser account type. '
+                .'Use PowerBIAzureUser connector instead.'
+        );
+});
+
+test('falls back to empty credentials when the config keys are missing', function () {
+    Config::set('powerbi', []);
+
+    $oauthConfig = (new PowerBIServicePrincipal)->oauthConfig();
+
+    expect($oauthConfig->getClientId())->toBe('')
+        ->and($oauthConfig->getClientSecret())->toBe('')
+        ->and($oauthConfig->getTokenEndpoint())->toBe(CloudEnvironment::Commercial->tokenEndpoint(''));
+});
+
+test('caching follows the cache.enabled config and defaults to on', function (array $cacheConfig, bool $expected) {
+    Config::set('powerbi.cache', $cacheConfig);
+
+    $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret');
+
+    expect((new ReflectionProperty($connector, 'cachingEnabled'))->getValue($connector))->toBe($expected);
+})->with([
+    'enabled' => [['enabled' => true], true],
+    'disabled' => [['enabled' => false], false],
+    'key missing' => [[], true],
+]);
+
+test('token request sends the Power BI resource for the connector cloud', function (string $cloud) {
+    $mockClient = new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make([
+            'access_token' => 'token',
+            'expires_in' => 3600,
+        ]),
+    ]);
+
+    $connector = new PowerBIServicePrincipal('tenant', 'client', 'secret', cloudEnvironment: $cloud);
+    $connector->withMockClient($mockClient);
+    $connector->getAccessToken();
+
+    expect($mockClient->getLastPendingRequest()->body()->get('resource'))
+        ->toBe(CloudEnvironment::from($cloud)->resourceUrl());
+})->with(['commercial', 'gcc', 'gcc_high', 'dod']);

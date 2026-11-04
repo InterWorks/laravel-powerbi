@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Package Overview
 
 This is a Laravel package that provides a REST API client for Microsoft Power BI. It uses Saloon v3 for HTTP interactions and implements two OAuth2 authentication flows with Azure AD:
+
 - **Client Credentials Grant** for Service Principal authentication (server-to-server)
 - **Authorization Code Grant** for Azure User authentication (user-delegated)
 
@@ -36,6 +37,9 @@ composer format
 
 # Run static analysis (PHPStan level 10)
 composer analyse
+
+# Run the syntax, Pint and PHPCS checks CI runs
+composer lint
 ```
 
 ### Package Setup
@@ -52,6 +56,7 @@ composer prepare
 The package uses a hierarchical connector architecture to support multiple OAuth2 flows:
 
 **Base Connector**:
+
 - **`PowerBIConnectorBase`** (`src/Classes/PowerBIConnectorBase.php`): Abstract base class that provides:
   - Base URL resolution per cloud environment (commercial default: `https://api.powerbi.com/v1.0/myorg`)
   - Cloud environment resolution via `resolveCloudEnvironment()` (explicit override → config → commercial)
@@ -60,9 +65,11 @@ The package uses a hierarchical connector architecture to support multiple OAuth
   - Common functionality shared by all connector types
 
 **Cloud Environments**:
+
 - **`CloudEnvironment`** (`src/Enums/CloudEnvironment.php`): Backed string enum (`commercial`, `gcc`, `gcc_high`, `dod`) centralizing per-cloud URL resolution — REST API base URL, Entra authority, OAuth authorize/token endpoints, and the Power BI resource URL. Configure via `cloud_environment` config / `POWER_BI_CLOUD_ENVIRONMENT` env var, or pass `cloudEnvironment` to any factory method or connector. A missing/empty value defaults to commercial; any other unrecognized value throws `InvalidArgumentException` at connector construction.
 
 **Concrete Connectors**:
+
 - **`PowerBIServicePrincipal`** (`src/Connectors/PowerBIServicePrincipal.php`):
   - Uses `ClientCredentialsGrant` trait from Saloon
   - Supports `ServicePrincipal` and `AdminServicePrincipal` account types
@@ -80,6 +87,7 @@ The package uses a hierarchical connector architecture to support multiple OAuth
   - Supports access token refresh via refresh tokens
 
 **Factory Class & Facade**:
+
 - **`PowerBI`** (`src/PowerBI.php`): Factory class that provides:
   - Static factory methods: `servicePrincipal()`, `adminServicePrincipal()`, `azureUser()`, `create()`
   - Singleton connector management: `connector()`, `setConnector()`, `resetConnector()`
@@ -120,6 +128,7 @@ The package supports two OAuth2 authentication flows:
 Endpoints below are for the commercial cloud; sovereign clouds (GCC, GCC High, DoD) resolve different hosts via the `CloudEnvironment` enum. Set `POWER_BI_CLOUD_ENVIRONMENT` (`commercial` (default), `gcc`, `gcc_high`, or `dod`) to select the cloud.
 
 **1. Client Credentials Grant (Service Principal)**:
+
 - Used for server-to-server authentication
 - No user interaction required
 - Azure AD v1.0 endpoints
@@ -134,6 +143,7 @@ Endpoints below are for the commercial cloud; sovereign clouds (GCC, GCC High, D
   - `POWER_BI_ADMIN_CLIENT_SECRET` - Admin service principal credentials
 
 **2. Authorization Code Grant (Azure User)**:
+
 - Used for user-delegated authentication
 - Requires user browser interaction and consent
 - Uses the same `client_id` and `client_secret` as Service Principal, but with a different OAuth flow
@@ -240,6 +250,7 @@ PHPStan configuration (`phpstan.neon`):
 ## Usage Examples
 
 The package provides two usage patterns:
+
 1. **Facade Pattern** (recommended): Static methods for quick access
 2. **Direct Connector Pattern**: Explicit connector instances for fine-grained control
 
@@ -417,6 +428,7 @@ When adding a new Power BI endpoint:
 2. Create DTO(s) in `src/DTO/` with readonly properties
 3. Implement `createDtoFromResponse()` in request class with PHPStan type annotations
 4. **If endpoint has account type restrictions**, use the `HasAccountTypeRestrictions` trait:
+
    ```php
    use InterWorks\PowerBI\Requests\Concerns\HasAccountTypeRestrictions;
 
@@ -430,6 +442,7 @@ When adding a new Power BI endpoint:
        }
    }
    ```
+
    The connector will automatically enforce restrictions before sending the request.
 5. Add test in `tests/Unit/Requests/{Category}/{Action}Test.php`
 6. If using `HasAccountTypeRestrictions`, add tests for each account type to verify access control
