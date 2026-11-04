@@ -197,3 +197,15 @@ test('caching can be disabled via config', function () {
     $isCachingEnabled->setAccessible(true);
     expect($isCachingEnabled->getValue($connector))->toBeFalse();
 });
+
+test('caching follows the cache.enabled config and defaults to on', function (array $cacheConfig, bool $expected) {
+    Config::set('powerbi.cache', $cacheConfig);
+
+    $connector = new PowerBIAzureUser('tenant', 'client', 'secret', 'https://my-app.com/oauth/callback');
+
+    expect((new ReflectionProperty($connector, 'cachingEnabled'))->getValue($connector))->toBe($expected);
+})->with([
+    'enabled' => [['enabled' => true], true],
+    'disabled' => [['enabled' => false], false],
+    'key missing' => [[], true],
+]);
