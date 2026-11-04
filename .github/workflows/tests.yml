@@ -176,3 +176,16 @@ jobs:
           test -s config/powerbi.php
           php artisan tinker --execute='echo PowerBI::connector()->getCloudEnvironment()->value, "/", PowerBI::connector()->cacheExpiryInSeconds();' | tee output.txt
           grep -q 'commercial/600' output.txt
+
+  # The one check the main ruleset requires, so changing the matrix does not mean changing the ruleset.
+  passed:
+    name: Tests passed
+    if: always()
+    needs: [tests, coverage, mutation, install]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail unless every job succeeded
+        env:
+          ALL_SUCCEEDED: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
+        run: test "$ALL_SUCCEEDED" = 'true'
