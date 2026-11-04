@@ -202,3 +202,24 @@ test('getAccessToken sends the client credentials request to the absolute Entra 
     'gcc_high' => ['gcc_high', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
     'dod' => ['dod', 'https://login.microsoftonline.us/test-tenant/oauth2/token'],
 ]);
+
+test('sends the X-Start-Time header as a string that PSR-7 accepts', function () {
+    $connector = new PowerBIServicePrincipal(
+        tenant: 'test-tenant',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        connectionAccountType: ConnectionAccountType::ServicePrincipal
+    );
+
+    $connector->withMockClient(new MockClient([
+        GetClientCredentialsTokenRequest::class => MockResponse::make(['access_token' => 'fake-access-token', 'expires_in' => 3600]),
+    ]));
+
+    $connector->getAccessToken();
+
+    $connector->getMockClient()->assertSent(function ($request, $response) {
+        $startTime = $response->getPendingRequest()->createPsrRequest()->getHeaderLine('X-Start-Time');
+
+        return ctype_digit($startTime);
+    });
+});
