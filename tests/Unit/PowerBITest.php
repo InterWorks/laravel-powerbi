@@ -4,6 +4,7 @@ use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
 use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\DTO\Report;
+use InterWorks\PowerBI\Enums\CloudEnvironment;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\PowerBI;
 use InterWorks\PowerBI\Requests\Groups\GetGroups;
@@ -211,6 +212,8 @@ test('authenticate sets authenticator on current connector with token string', f
 
     $connector = PowerBI::connector();
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
+    expect($connector->getAuthenticator())->toBeInstanceOf(TokenAuthenticator::class)
+        ->and($connector->getAuthenticator()->token)->toBe('test-token');
 });
 
 test('authenticate sets authenticator on current connector with TokenAuthenticator', function () {
@@ -223,6 +226,7 @@ test('authenticate sets authenticator on current connector with TokenAuthenticat
 
     $connector = PowerBI::connector();
     expect($connector)->toBeInstanceOf(PowerBIServicePrincipal::class);
+    expect($connector->getAuthenticator())->toBe($authenticator);
 });
 
 test('getAccessToken works for ServicePrincipal connector', function () {
@@ -318,6 +322,21 @@ test('resolveRequestClass finds request class in Reports namespace', function ()
     expect($result)->toBe('InterWorks\PowerBI\Requests\Reports\GetReportInGroup');
 });
 
+test('resolveRequestClass finds request classes in the other namespaces', function (string $method, string $class) {
+    $reflection = new ReflectionClass(PowerBI::class);
+    $resolver = $reflection->getMethod('resolveRequestClass');
+    $resolver->setAccessible(true);
+
+    expect($resolver->invoke(null, $method))->toBe($class);
+})->with([
+    'Dashboards' => ['getDashboardInGroup', 'InterWorks\PowerBI\Requests\Dashboards\GetDashboardInGroup'],
+    'EmbedToken' => [
+        'dashboardsGenerateTokenInGroup',
+        'InterWorks\PowerBI\Requests\EmbedToken\DashboardsGenerateTokenInGroup',
+    ],
+    'Admin Groups' => ['getGroupsAsAdmin', 'InterWorks\PowerBI\Requests\Admin\Groups\GetGroupsAsAdmin'],
+]);
+
 test('resolveRequestClass returns null for non-existent class', function () {
     $reflection = new ReflectionClass(PowerBI::class);
     $method = $reflection->getMethod('resolveRequestClass');
@@ -337,4 +356,79 @@ test('__callStatic throws RuntimeException for non-existent method', function ()
         RuntimeException::class,
         'Method nonExistentMethod does not exist and could not be resolved to a Request class'
     );
+});
+
+//
+// Credential Resolution
+//
+
+test('adminServicePrincipal uses explicit credentials over config', function () {
+    config()->set('powerbi.admin_client_id', 'config-admin-id');
+    config()->set('powerbi.admin_client_secret', 'config-admin-secret');
+
+    $oauthConfig = PowerBI::adminServicePrincipal('tenant', 'explicit-id', 'explicit-secret')->oauthConfig();
+
+    expect($oauthConfig->getClientId())->toBe('explicit-id')
+        ->and($oauthConfig->getClientSecret())->toBe('explicit-secret');
+});
+
+test('adminServicePrincipal falls back to empty credentials when the config keys are missing', function () {
+    config()->set('powerbi', []);
+
+    $oauthConfig = PowerBI::adminServicePrincipal()->oauthConfig();
+
+    expect($oauthConfig->getClientId())->toBe('')
+        ->and($oauthConfig->getClientSecret())->toBe('');
+});
+
+test('azureUser uses explicit credentials over config', function () {
+    config()->set('powerbi.tenant', 'config-tenant');
+    config()->set('powerbi.client_id', 'config-id');
+    config()->set('powerbi.client_secret', 'config-secret');
+    config()->set('powerbi.redirect_uri', 'https://config.example.com/callback');
+
+    $oauthConfig = PowerBI::azureUser(
+        'explicit-tenant',
+        'explicit-id',
+        'explicit-secret',
+        'https://explicit.example.com/callback'
+    )->oauthConfig();
+
+    expect($oauthConfig->getTokenEndpoint())->toBe(CloudEnvironment::Commercial->tokenEndpoint('explicit-tenant'))
+        ->and($oauthConfig->getClientId())->toBe('explicit-id')
+        ->and($oauthConfig->getClientSecret())->toBe('explicit-secret')
+        ->and($oauthConfig->getRedirectUri())->toBe('https://explicit.example.com/callback');
+});
+
+test('azureUser falls back to empty credentials when the config keys are missing', function () {
+    config()->set('powerbi', []);
+
+    $oauthConfig = PowerBI::azureUser()->oauthConfig();
+
+    expect($oauthConfig->getTokenEndpoint())->toBe(CloudEnvironment::Commercial->tokenEndpoint(''))
+        ->and($oauthConfig->getClientId())->toBe('')
+        ->and($oauthConfig->getClientSecret())->toBe('')
+        ->and($oauthConfig->getRedirectUri())->toBe('');
+});
+
+test('create passes string credentials to the connector', function () {
+    $connector = PowerBI::create(ConnectionAccountType::ServicePrincipal, [
+        'tenant' => 'explicit-tenant',
+        'client_id' => 'explicit-id',
+        'client_secret' => 'explicit-secret',
+        'cloud_environment' => 'gcc',
+    ]);
+
+    expect($connector->getCloudEnvironment())->toBe(CloudEnvironment::GCC)
+        ->and($connector->oauthConfig()->getClientId())->toBe('explicit-id')
+        ->and($connector->oauthConfig()->getClientSecret())->toBe('explicit-secret')
+        ->and($connector->oauthConfig()->getTokenEndpoint())->toBe(CloudEnvironment::GCC->tokenEndpoint('explicit-tenant'));
+});
+
+test('create ignores credentials that are not strings', function () {
+    config()->set('powerbi.client_id', 'config-id');
+
+    $connector = PowerBI::create(ConnectionAccountType::ServicePrincipal, ['client_id' => 123]);
+
+    expect($connector->oauthConfig()->getClientId())->toBe('config-id');
 });

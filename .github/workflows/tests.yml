@@ -115,7 +115,7 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run mutation tests
-        run: vendor/bin/pest --mutate --everything --covered-only --parallel --min=75
+        run: vendor/bin/pest --mutate --everything --covered-only --parallel --min=95
 
   # Testbench registers the service provider by hand and never builds the Composer archive, so the
   # suite above cannot see a broken discovery entry, publish tag or export-ignore line. This installs
