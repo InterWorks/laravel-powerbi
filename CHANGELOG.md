@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
+## 0.1.3 - 2026-11-04
+
+### What's Changed
+
+#### Fixed
+
+- Fixed response caching, which only worked within a single second because the `X-Start-Time` header changed the cache key (#38)
+
+Responses can now be up to `POWER_BI_CACHE_EXPIRY_SECONDS` old (default 3600). Apps that were getting fresh data by accident will see cached data until the entry expires. An app that needs fresh data can set `POWER_BI_CACHE_ENABLED=false`.
+
+#### CI
+
+- Added lint, test, audit, mutation and code review workflows (#32)
+- Replaced Dependabot with Renovate and added required gate checks (#33)
+- Changed the changelog workflow to push with a deploy key (#35)
+- Added tests for the gaps mutation testing found (#37)
+
+**Full Changelog**: https://github.com/InterWorks/laravel-powerbi/compare/0.1.2...0.1.3
+
 ## 0.1.2 - 2026-11-04
 
 Fixed requests failing on guzzlehttp/psr7 3 by sending X-Start-Time as a string (#31). Fixed numeric string cache expiry values from env()
