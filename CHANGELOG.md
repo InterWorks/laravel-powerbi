@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-powerbi` will be documented in this file.
 
+## 0.1.2 - 2026-11-04
+
+Fixed requests failing on guzzlehttp/psr7 3 by sending X-Start-Time as a string (#31). Fixed numeric string cache expiry values from env()
+being rejected (#25). Added optional row-level security identities to ReportsGenerateTokenInGroup (#26). Fixed the vendor:publish tag in the README (#24).
+
 ## 0.1.1 - 2026-06-08
 
 ### Added
