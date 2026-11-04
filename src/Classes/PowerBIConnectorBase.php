@@ -8,6 +8,7 @@ use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use InterWorks\PowerBI\Exceptions\AccountTypeRestrictedException;
 use InterWorks\PowerBI\Exceptions\UnauthorizedAdminAccessException;
 use InterWorks\PowerBI\Requests\Concerns\HasAccountTypeRestrictions;
+use Saloon\Enums\PipeOrder;
 use Saloon\Http\Connector;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\PendingRequest;
@@ -43,8 +44,11 @@ abstract class PowerBIConnectorBase extends Connector
 
     public function boot(PendingRequest $pendingRequest): void
     {
-        // Get the datetime at the moment the request is being prepared and add it as a header for logging purposes
-        $pendingRequest->headers()->add('X-Start-Time', (string) (new \DateTime)->getTimestamp());
+        // Add the current time as a header for logging purposes. This runs last because the response cache key
+        // includes the request's headers, and a timestamp in that key would make every second a cache miss.
+        $pendingRequest->middleware()->onRequest(function (PendingRequest $middlewarePendingRequest): void {
+            $middlewarePendingRequest->headers()->add('X-Start-Time', (string) (new \DateTime)->getTimestamp());
+        }, order: PipeOrder::LAST);
     }
 
     /**
