@@ -32,7 +32,7 @@ composer require interworks/laravel-powerbi
 Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag="laravel-powerbi-config"
+php artisan vendor:publish --tag="powerbi-config"
 ```
 
 Add your Power BI credentials to your `.env` file:
