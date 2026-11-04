@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 use InterWorks\PowerBI\Classes\PowerBIConnectorBase;
 use InterWorks\PowerBI\Connectors\PowerBIAzureUser;
 use InterWorks\PowerBI\Connectors\PowerBIServicePrincipal;
+use InterWorks\PowerBI\DTO\ActivityEventsResponse;
 use InterWorks\PowerBI\DTO\Dashboard;
 use InterWorks\PowerBI\DTO\Dashboards;
 use InterWorks\PowerBI\DTO\Groups;
@@ -33,6 +34,7 @@ use Saloon\Http\Request;
  * @method static Report getReport(string $reportId) Get a specific report by ID (AzureUser only)
  * @method static Dashboards getDashboardsInGroup(string $groupId) Get dashboards in a specific group
  * @method static Dashboard getDashboardInGroup(string $groupId, string $dashboardId) Get a specific dashboard in a group
+ * @method static ActivityEventsResponse getActivityEvents(string $startDateTime, string $endDateTime, ?string $filter = null) Get activity events for a tenant within a 1-hour window
  * @method static mixed send(Request $request) Send a request using the current connector
  *
  * @see \InterWorks\PowerBI\PowerBI

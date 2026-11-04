@@ -1,0 +1,33 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Date": "Mon, 18 Nov 2025 00:20:57 GMT"
+    },
+    "data": {
+        "activityEventEntities": [
+            {
+                "Id": "evt-004",
+                "CreationTime": "2025-11-18T00:20:00Z",
+                "Operation": "ShareReport",
+                "Activity": "ShareReport",
+                "UserId": "admin@example.com",
+                "IsSuccess": true,
+                "ReportId": "d1e2f3a4-b5c6-7890-abcd-ef1234567890",
+                "ReportName": "Final Report"
+            },
+            {
+                "Id": "evt-005",
+                "CreationTime": "2025-11-18T00:25:00Z",
+                "Operation": "DeleteReport",
+                "Activity": "DeleteReport",
+                "UserId": "admin@example.com",
+                "IsSuccess": true
+            }
+        ]
+    },
+    "context": []
+}

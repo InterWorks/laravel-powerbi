@@ -1,0 +1,57 @@
+{
+    "statusCode": 200,
+    "headers": {
+        "Cache-Control": "no-store, must-revalidate, no-cache",
+        "Content-Type": "application\/json; odata.metadata=minimal",
+        "RequestId": "REDACTED",
+        "OData-Version": "4.0",
+        "Date": "Mon, 18 Nov 2025 00:20:56 GMT"
+    },
+    "data": {
+        "activityEventEntities": [
+            {
+                "Id": "evt-001",
+                "CreationTime": "2025-11-18T00:05:00Z",
+                "Operation": "ViewReport",
+                "Activity": "ViewReport",
+                "UserId": "user@example.com",
+                "IsSuccess": true,
+                "WorkspaceId": "8f804a70-791e-3abf-ac10-75634bf1053f",
+                "WorkSpaceName": "Sales Analytics",
+                "ReportId": "d1e2f3a4-b5c6-7890-abcd-ef1234567890",
+                "ReportName": "Sales Report",
+                "ReportType": "PowerBIReport",
+                "DatasetId": "dataset-id-001",
+                "DatasetName": "Sales Dataset",
+                "ItemName": "Sales Report",
+                "ClientIP": "192.168.1.1",
+                "UserAgent": "Mozilla\/5.0",
+                "RequestId": "REDACTED"
+            },
+            {
+                "Id": "evt-002",
+                "CreationTime": "2025-11-18T00:10:00Z",
+                "Operation": "ExportReport",
+                "Activity": "ExportReport",
+                "UserId": "analyst@example.com",
+                "IsSuccess": true,
+                "WorkspaceId": "8f804a70-791e-3abf-ac10-75634bf1053f",
+                "WorkSpaceName": "Sales Analytics",
+                "ReportId": "d1e2f3a4-b5c6-7890-abcd-ef1234567890",
+                "ReportName": "Sales Report",
+                "ReportType": "PowerBIReport",
+                "RequestId": "REDACTED"
+            },
+            {
+                "Id": "evt-003",
+                "CreationTime": "2025-11-18T00:15:00Z",
+                "Operation": "ViewDashboard",
+                "UserId": "viewer@example.com",
+                "IsSuccess": false
+            }
+        ],
+        "continuationToken": "next-page-token-example",
+        "continuationUri": "https://api.powerbi.com/v1.0/myorg/admin/activityevents?continuationToken=next-page-token-example"
+    },
+    "context": []
+}
