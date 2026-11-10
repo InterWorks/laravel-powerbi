@@ -11,6 +11,8 @@ use InterWorks\PowerBI\DTO\Dashboards;
 use InterWorks\PowerBI\DTO\Groups;
 use InterWorks\PowerBI\DTO\Report;
 use InterWorks\PowerBI\DTO\Reports;
+use InterWorks\PowerBI\DTO\ScanRequest;
+use InterWorks\PowerBI\DTO\ScanResult;
 use InterWorks\PowerBI\Enums\ConnectionAccountType;
 use Saloon\Contracts\Authenticator;
 use Saloon\Http\Request;
@@ -33,6 +35,9 @@ use Saloon\Http\Request;
  * @method static Report getReport(string $reportId) Get a specific report by ID (AzureUser only)
  * @method static Dashboards getDashboardsInGroup(string $groupId) Get dashboards in a specific group
  * @method static Dashboard getDashboardInGroup(string $groupId, string $dashboardId) Get a specific dashboard in a group
+ * @method static ScanRequest postWorkspaceInfo(array<int, string> $workspaceIds, bool $datasetSchema = true, bool $datasetExpressions = false) Initiate a workspace metadata scan (Scanner API)
+ * @method static ScanRequest getScanStatus(string $scanId) Get the status of a workspace metadata scan
+ * @method static ScanResult getScanResult(string $scanId) Get the result of a completed workspace metadata scan
  * @method static mixed send(Request $request) Send a request using the current connector
  *
  * @see \InterWorks\PowerBI\PowerBI
